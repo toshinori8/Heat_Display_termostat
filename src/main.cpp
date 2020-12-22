@@ -155,8 +155,6 @@ void setup()
   uText.setFont(SegoeUI13);
   uText.print(200,20,"Wczytuje dane..");
 
-
-
   bool mysd = 0;
  
   while (!mysd)
