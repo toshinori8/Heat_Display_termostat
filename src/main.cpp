@@ -121,12 +121,8 @@ int setupRoom(String roomN);
 int update_gfx(int a, int b, int c);
 int roundfunction(float);
 
-
-
-
  int myX= 200; 
  int myY= 20;
-
 
 void setup()
 {
@@ -154,11 +150,9 @@ void setup()
   //utft.fillScr(75, 101, 44);
  
   utft.setColor(255,255,255);
-
   utft.setBackColor(0,0,0);
   uText.setBackground(0,0,0);
   uText.setFont(SegoeUI13);
-  
   uText.print(200,20,"Wczytuje dane..");
 
 
@@ -170,7 +164,6 @@ void setup()
 
     if (!sd.begin(SD_CHIP_SELECT, SD_SCK_MHZ(41)))
     {
-
 
       Serial.println(F("Card failed, or not present"));
       Serial.println(F("Retrying...."));
@@ -195,7 +188,7 @@ void setup()
    uText.setForeground(100,100,100);
 
   delay(300);
-  uText.print(myX,myY,"Łącze WiFi");
+  uText.print(myX,myY,"WiFi");
  delay(300);
 
  
