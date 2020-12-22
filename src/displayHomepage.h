@@ -2,6 +2,7 @@
 void displayHomepage()
 {
 
+
 	currentPage = 0;
 	utft.clrScr();
 
