@@ -179,17 +179,15 @@ void setup()
     }
   }
 
-  utft.setColor(255,255,255);
-  utft.fillRect(100, 0, 319, 29);
- utft.setColor(100,100,100);
-  utft.setBackColor(100,100,100);
-   uText.setForeground(100,100,100);
+    utft.setColor(255,255,255);
+    utft.fillRect(100, 0, 319, 29);
+    utft.setColor(100,100,100);
+    utft.setBackColor(100,100,100);
+    uText.setForeground(100,100,100);
 
-  delay(300);
-  uText.print(myX,myY,"WiFi");
- delay(300);
-
- 
+    delay(300);
+    uText.print(myX,myY,"WiFi");
+    delay(300);
 
   // uText.print(20, 50, "Wczytuje dane");
   // delay(1000);
@@ -197,10 +195,10 @@ void setup()
   // delay(1000);
   // uText.print(20, 90, "Wczytuje dane recovery");
   //readFromSensors();
+  
   delay(1500);
- 
-
-    readFromSensors();
+  
+  readFromSensors();
 
   myTouch.InitTouch(TOUCH_ORIENTATION);
   myTouch.setPrecision(PREC_EXTREME);
@@ -228,12 +226,8 @@ void loop()
 
           if (currentPage == 0)
         {
-
             displayHomepage();
         }
-
-
-
       };
     }
     else
@@ -247,12 +241,9 @@ void loop()
     char d = Serial.read();
     Serial1.write(d);
   }
-
   if (currentMillis - prevMillisTouch > 300) // make sure it's been .5 sec between touches
   {
-
     //configFile.write((const uint8_t *)&room, sizeof(room));
-
     prevMillisTouch = currentMillis; // reset the touch timer
     millisDim = currentMillis;       // reset screen dim timer
     millisHome = currentMillis;      // reset return home timer
@@ -274,6 +265,5 @@ void loop()
 #include <displayRooms.h>
 #include <setupRoom.h>
 #include <parseJSON.h>
-
 #include <functions.h>
 #include <readFromSensors.h>
