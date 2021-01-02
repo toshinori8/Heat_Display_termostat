@@ -56,3 +56,33 @@ bool readForecast(String jsonMessage)
 
     return out;
 }
+
+
+bool readSensorData(String jsonMessage){
+
+    Serial.println("getSensorData")
+
+    if(jsonMessage.indexOf("codSensors")>0){
+
+                    const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(6) + 90;
+                    DynamicJsonBuffer jsonBuffer(capacity);
+
+                    const char* json = "{\"1\":{\"powerOn\":1,\"temp\":19.1,\"hum\":62.1,\"batt\":86,\"name\":\"Clear Grass Waleria\",\"id\":\"clear02\"}}";
+
+                    JsonObject& root = jsonBuffer.parseObject(json);
+
+                    JsonObject& root_1 = root["1"];
+                    int root_1_powerOn = root_1["powerOn"]; // 1
+                    float root_1_temp = root_1["temp"]; // 19.1
+                    float root_1_hum = root_1["hum"]; // 62.1
+                    int root_1_batt = root_1["batt"]; // 86
+                    const char* root_1_name = root_1["name"]; // "Clear Grass Waleria"
+                    const char* root_1_id = root_1["id"]; // "clear02"
+
+
+
+
+
+
+    }
+}
