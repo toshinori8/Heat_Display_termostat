@@ -26,4 +26,7 @@ void displayHomepage()
 
 	uText.print(40, 170, String(humidity_today) + " %");
 	uText.print(115, 170, String(presure_today) + " Hpa");
+
+
+
 };

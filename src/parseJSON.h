@@ -1,88 +1,47 @@
 #include <Arduino.h>
 
+
+
 bool readForecast(String jsonMessage)
 {
-
-    Serial.println("readForecast");
+//  Serial.print(jsonMessage);
 
     int out = 0;
+        // debug
+        utft.setBackColor(120,120,110);
+        utft.fillRect( 0, 0 , 199,23);
+        uText.print(25, 10, "read Forecast");
 
-    if (jsonMessage.indexOf("cod") > 0)
-    {
-
-        const size_t capacity = 5 * JSON_ARRAY_SIZE(1) + JSON_ARRAY_SIZE(5) + 15 * JSON_OBJECT_SIZE(1) + 6 * JSON_OBJECT_SIZE(2) + 5 * JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(5) + 6 * JSON_OBJECT_SIZE(8) + 5 * JSON_OBJECT_SIZE(9) + 1310;
-        DynamicJsonDocument doc(capacity);
-
-        deserializeJson(doc, jsonMessage);
-
-        JsonArray list = doc["list"];
-        JsonObject list_0 = list[0]; // list ONE
-        JsonObject list_0_main = list_0["main"];
-
-        float list_0_main_temp = list_0_main["temp"];
-
-       double round2(double value) {
-   return (int)(value * 100 + 0.5) / 100.0;
-}
-
-       Serial.print();
+       
 
 
 
-        temp_outside_today = list_0_main["temp"];
-        temp_outside_feels_like_today = list_0_main["feels_like"];
-        temp_min_today = list_0_main["temp_min"];
-        temp_max_today = list_0_main["temp_max"];
-        presure_today = list_0_main["pressure"];
-        humidity_today = list_0_main["humidity"];
+    if (jsonMessage.indexOf("cod") > 0){
 
-        const char *cod = doc["cod"]; // "200"
-        int cnt = doc["cnt"];         // 5
+            DynamicJsonDocument doc(400);
 
-        //temp_outside_today = cod;
-
-        // temp_outside_today      = "12";      // temperatura na zewnątrz.
-        // temp_min_today          = "12";      //  najzimniej dzisiaj
-        // temp_max_today          = "12";      //  najcieplej dzisiaj
-        // presure_today           = "12";      //
-        // humidity_today          = "12";      //
-
-        out = 1;
-    }
-    else
-    {
-        out = 0;
-    }
-
-    return out;
-}
+            deserializeJson(doc,jsonMessage);
 
 
-bool readSensorData(String jsonMessage){
-
-    Serial.println("getSensorData")
-
-    if(jsonMessage.indexOf("codSensors")>0){
-
-                    const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(6) + 90;
-                    DynamicJsonBuffer jsonBuffer(capacity);
-
-                    const char* json = "{\"1\":{\"powerOn\":1,\"temp\":19.1,\"hum\":62.1,\"batt\":86,\"name\":\"Clear Grass Waleria\",\"id\":\"clear02\"}}";
-
-                    JsonObject& root = jsonBuffer.parseObject(json);
-
-                    JsonObject& root_1 = root["1"];
-                    int root_1_powerOn = root_1["powerOn"]; // 1
-                    float root_1_temp = root_1["temp"]; // 19.1
-                    float root_1_hum = root_1["hum"]; // 62.1
-                    int root_1_batt = root_1["batt"]; // 86
-                    const char* root_1_name = root_1["name"]; // "Clear Grass Waleria"
-                    const char* root_1_id = root_1["id"]; // "clear02"
+float temp = doc["temp"];
+float temp_min = doc["temp_min"];
+float temp_max = doc["temp_max"];
+float pressure = doc["pressure"];
+float humidity = doc["humidity"];
+float feels_like = doc["feels_like"];
 
 
 
+                temp_outside_today = temp;
+                temp_outside_feels_like_today = feels_like;
+                temp_min_today = temp_min;
+                temp_max_today = temp_max;
+                presure_today =  pressure; // 1033
+                humidity_today = humidity; // 84
 
 
+   }
+  
+    return 1;
+  };
 
-    }
-}

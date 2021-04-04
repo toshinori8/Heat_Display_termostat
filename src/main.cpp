@@ -8,11 +8,15 @@
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
-
 #include "math.h"
+#include <arduino-timer.h>
 
 // file system object
 SdFat sd;
+
+
+auto timer = timer_create_default();
+
 // print stream
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
@@ -38,6 +42,7 @@ File configFile;
 // #define ESP8266 Serial1; // Serial 9600
 
 int updateInt = 550000; //miliseconds
+unsigned long previousMillis = 0;
 int update_timer;
 int sleep_timer = 0; // 1000
 int sleep_state = 0;
@@ -66,12 +71,12 @@ typedef struct
 param_pokoju room[7];
 // DEFINES ROOM TEMPERATURE ARRAY
 
-int temp_outside_today = 15;           // temperatura na zewnątrz.
-int temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
-int temp_min_today = 0;                //  najzimniej dzisiaj
-int temp_max_today = 0;                //  najcieplej dzisiaj
-int presure_today = 0;                   //  cisnienie baryczne aktualne
-int humidity_today = 0;                  //  wilgotność aktualna
+float temp_outside_today = 15;           // temperatura na zewnątrz.
+float temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
+float temp_min_today = 0;                //  najzimniej dzisiaj
+float temp_max_today = 0;                //  najcieplej dzisiaj
+float presure_today = 0;                   //  cisnienie baryczne aktualne
+float humidity_today = 0;                  //  wilgotność aktualna
 
 const char *temp_outside_today_01 = "16"; // temperatura na zewnątrz.
 const char *temp_min_today_01 = "0";      //  najzimniej dzisiaj
@@ -106,17 +111,24 @@ extern prog_uint16_t img_hum[494] PROGMEM;
 extern prog_uchar SegoeUI13[1855] PROGMEM;
 extern prog_uchar SegoeUISemibold28a[10780] PROGMEM;
 
+unsigned long touchDelayStart = 0; // touch delay 
+bool touchDelayRunning = false;
 
 
 void displayHomepage();
+bool readConfig();
+bool writeConfig();
 void displayRooms();
 bool readForecast(String jsonMessage);
-bool readFromSensors();
+bool readFromSensors(String jsonMessage);
+
+
 void sleep_timerF(int stime);
 void drawFrame(int x1, int y1, int x2, int y2);
 void displayWifiIcon(int state);
 
 int setupRoom(String roomN);
+
 
 int update_gfx(int a, int b, int c);
 int roundfunction(float);
@@ -124,10 +136,16 @@ int roundfunction(float);
  int myX= 200; 
  int myY= 20;
 
+bool lockTouch=true;
+
+
+
 void setup()
 {
 
-  // READ  ROOM DATA
+
+
+
 
   currentPage = 0; // aktualna strona
 
@@ -144,10 +162,6 @@ void setup()
 
   utft.clrScr();
 
-
-  
-
-  //utft.fillScr(75, 101, 44);
  
   utft.setColor(255,255,255);
   utft.setBackColor(0,0,0);
@@ -155,8 +169,9 @@ void setup()
   uText.setFont(SegoeUI13);
   uText.print(200,20,"Wczytuje dane..");
 
-  bool mysd = 0;
  
+
+  bool mysd = 0;
   while (!mysd)
   {
 
@@ -170,12 +185,12 @@ void setup()
     else
     {
       mysd = 1;
-      
-
       myFiles.load(0, 0, 320, 240, "LOGOCOM.RAW", 100, 0);
       Serial.println(F("Card initialised."));
       uText.print(myX,myY,"Card initialised...");
+
       delay(200);
+      
     }
   }
 
@@ -184,7 +199,6 @@ void setup()
     utft.setColor(100,100,100);
     utft.setBackColor(100,100,100);
     uText.setForeground(100,100,100);
-
     delay(300);
     uText.print(myX,myY,"WiFi");
     delay(300);
@@ -194,20 +208,16 @@ void setup()
   // uText.print(20, 70, "Inicjuje połączenie WiFi");
   // delay(1000);
   // uText.print(20, 90, "Wczytuje dane recovery");
-  //readFromSensors();
-  
   delay(1500);
-  
-  readFromSensors();
-
+  //readFromSensors();
   myTouch.InitTouch(TOUCH_ORIENTATION);
   myTouch.setPrecision(PREC_EXTREME);
-
-  configFile = sd.open("datalog.raw", FILE_READ);
 }
 
 void loop()
 {
+
+
   unsigned long currentMillis = millis(); // get current millis
   sleep_timerF(sleep_time);
   String message = "";
@@ -220,20 +230,23 @@ void loop()
       delay(600);
       Serial1.println("get forecast_5h");
     }
-    if (message.indexOf("message") > 0)
+    if (message.indexOf("forecast_5h") > 0)
     {
-      if(readForecast(message)){
-
-          if (currentPage == 0)
+        Serial.print("forecast_5h odpowiedź znaleziona");
+      if(readForecast(message)){  
+        if (currentPage == 0)
         {
             displayHomepage();
+            Serial1.println("get SensorsData");
         }
       };
     }
+    
     else
     {
       // print raw message 
-      Serial.println("RAW MESSAGE: " + message);
+        //Serial.println("RAW MESSAGE: " + message);
+       Serial.println("RAW MESSAGE: " + message);
     }
   }
   while (Serial.available() > 0)
@@ -241,14 +254,27 @@ void loop()
     char d = Serial.read();
     Serial1.write(d);
   }
+
+
+  // TOUCH DELAY 
+  if (touchDelayRunning && ((millis() - touchDelayStart) >= 3*1000)) {
+    touchDelayRunning = false; // finished delay -- single shot, once only
+    lockTouch=false; // turn led off
+    Serial.println("Touch przywrocony ");
+  }
+  if (currentMillis - previousMillis >= 40*10000) {
+    previousMillis = currentMillis;
+    readFromSensors();
+  }
+
   if (currentMillis - prevMillisTouch > 300) // make sure it's been .5 sec between touches
   {
-    //configFile.write((const uint8_t *)&room, sizeof(room));
+
     prevMillisTouch = currentMillis; // reset the touch timer
     millisDim = currentMillis;       // reset screen dim timer
     millisHome = currentMillis;      // reset return home timer
-                                     // processMyTouch();
-#include <touchSetup.h>
+                                   
+    #include <touchSetup.h>
   }
 }
 
@@ -260,6 +286,7 @@ void loop()
 //#include <img_setupROOM.h>
 
 // APP CODE
+#include <readConfig.h>
 #include <update_gfx.h>
 #include <displayHomepage.h>
 #include <displayRooms.h>

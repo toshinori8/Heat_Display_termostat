@@ -1,15 +1,9 @@
-
-bool readFromSensors()
+bool readFromSensors(String jsonMessage)
 {
 ///
 int responns = 0;
-// Serial.println("Connectig to temperature Sensors");
-// Serial1.println("get bluetooth data");
-// Serial.println("get bluetooth data");
 
 /// get data and set array 
-
-  Serial.println("readFromSensors");
 
 ///  AE
     room[1].temp_set = 1;
@@ -36,22 +30,20 @@ int responns = 0;
     room[6].temp_actual = 6;
     room[6].humidity = 6;
     //room[2] = record_type{1,2};
-
-
- 
  // param_pokoju configurationFromFlash; // create a temporary struct
   
-  
+        if (jsonMessage.indexOf("sensors") > 0){
 
+            DynamicJsonDocument doc(400);
 
-
-
-
-           
-
+            deserializeJson(doc,jsonMessage);
+        
+        
+        
+        
+        }
+    
 
 responns = 1;
-
-
     return responns;
 }
