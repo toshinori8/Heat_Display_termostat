@@ -53,7 +53,7 @@ File dataFile = sd.open("config.json", FILE_READ);
 bool writeConfig(){
 
 
-String dataString = "{}{}{}{}{} jsonStringin futire asdasdsa asdfasdfsadf sadf sadf sadf asdf asdf asdf{}{}{}";
+String dataString = "{}{}{}{}{} jsonStringin {}{}{}";
  File dataFile = sd.open("config.json", O_WRITE | O_CREAT |O_TRUNC );
  if (dataFile) {
     dataFile.println(dataString);

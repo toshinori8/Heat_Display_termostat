@@ -228,7 +228,18 @@ void loop()
     if (message.indexOf("wifi connected") > 0)
     {
       delay(600);
-      Serial1.println("get forecast_5h");
+      //Serial1.println("get forecast_5h");
+      Serial1.println("mqttserver 192.168.8.150");
+      Serial.print("Connecting MQTT server...");
+    }
+    if(message.indexOf("mqtt connected")){
+      delay(200);
+      Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
+      displayHomepage();
+    }
+    if(message.indexOf("subscription added")){
+      delay(200);
+      
     }
     if (message.indexOf("forecast_5h") > 0)
     {
@@ -236,7 +247,7 @@ void loop()
       if(readForecast(message)){  
         if (currentPage == 0)
         {
-            displayHomepage();
+            
             Serial1.println("get SensorsData");
         }
       };
@@ -255,7 +266,7 @@ void loop()
     Serial1.write(d);
   }
 
-
+  
   // TOUCH DELAY 
   if (touchDelayRunning && ((millis() - touchDelayStart) >= 3*1000)) {
     touchDelayRunning = false; // finished delay -- single shot, once only
@@ -264,7 +275,7 @@ void loop()
   }
   if (currentMillis - previousMillis >= 40*10000) {
     previousMillis = currentMillis;
-    readFromSensors();
+    readFromSensors("");
   }
 
   if (currentMillis - prevMillisTouch > 300) // make sure it's been .5 sec between touches
@@ -276,6 +287,9 @@ void loop()
                                    
     #include <touchSetup.h>
   }
+
+
+  displayHomepage();
 }
 
 // |RESOURCES
