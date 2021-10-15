@@ -1,6 +1,7 @@
 if (myTouch.dataAvailable())
 {
-    Serial.print("tuch enabled");
+
+    sleep_timer = 0;
     myTouch.read();
     x = myTouch.getX();
     y = myTouch.getY();
@@ -11,8 +12,9 @@ if (myTouch.dataAvailable())
         // update forecast icon img_forecast_gif
         if ((x >= 259) && (x <= 311) && (y >= 74) && (y <= 118))
         {
-            drawFrame(59, 74, 311, 118);
+            //drawFrame(59, 74, 311, 118);
             Serial1.println("get forecast_5h");
+            // Serial.println("touch -> get forecast_5h");
         }
         //  getRooms Button / shows room in house
         if ((x >= 259) && (x <= 311) && (y >= 118) && (y <= 164))
@@ -105,4 +107,6 @@ if (myTouch.dataAvailable())
                 room[selectedROOM].humidity);
         }
     }
+
+
 }

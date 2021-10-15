@@ -3,15 +3,17 @@
 int update_gfx(int a, int b, int c)
 {
 
-    if (currentPage == 0)
-    { //  start page
+    if (currentPage == 0)  //  start page
+    { 
+
+
     }
     if (currentPage == 1) // displayRooms
     {
     }
-    if (currentPage == 3) // SETUP ROOMS
+    if (currentPage == 3) // SETUP ROOMS piętro
     {
-        utft.setColor(210, 210, 210);
+        utft.setColor(243, 244, 245);
         utft.fillRect(64, 12, 176, 108);
 
         uText.setForeground(100, 100, 110);

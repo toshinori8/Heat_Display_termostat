@@ -35,8 +35,8 @@ File dataFile = sd.open("config.json", FILE_READ);
  
   // close the file:
   dataFile.close();
-  Serial.println("option.txt:");
-  Serial.println(config);
+//   Serial.println("option.txt:");
+//   Serial.println(config);
 
 
  }

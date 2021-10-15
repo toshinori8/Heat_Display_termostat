@@ -120,7 +120,7 @@ void displayRooms()
 
     // utft.drawBitmap(8, 204, 30, 31, back);
 
-   Serial.print("lockTouch false");
+   // Serial.print("lockTouch false");
    //delay(200);
 
    // delay(1200);
@@ -130,7 +130,6 @@ void displayRooms()
       touchDelayStart = millis();
       touchDelayRunning = true;
 
-   Serial.print(":: gotowe mozna walić w ekran");
 
 
 }
