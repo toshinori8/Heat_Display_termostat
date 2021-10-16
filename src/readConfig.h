@@ -97,6 +97,16 @@ void readConfigJson(const char *filename, JsonObject &jsonReturn)
    if (error)
       Serial.println(F("Failed to read file, using default configuration"));
 
+
+    for (JsonPair keyValue : jsonReturn) {
+    
+    
+    Serial.print("key of object");
+    Serial.println(keyValue.key().c_str());
+
+
+  }
+
    // String output= "";
    //  serializeJson(jsonDoc,output );
    /// Serial.print(output);
