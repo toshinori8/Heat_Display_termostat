@@ -200,10 +200,10 @@ void setup()
       delay(200);
 
 // printFile("rooms.json");
-      StaticJsonDocument<2500> jsonDoc;
-      readConfigJson("rooms.json", jsonDoc);
- Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
-   Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
+    
+      readConfigJson("rooms.json");
+//  Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
+//    Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
 
     }
   }
@@ -254,7 +254,7 @@ void loop()
   {
     message = Serial1.readString();
     delay(200);
-    if (message.indexOf("wifi connected") > 0)
+    if (message.indexOf("wifi §§§§") > 0)
     {
       delay(600);
       Serial1.println("get forecast_5h");

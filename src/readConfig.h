@@ -12,11 +12,28 @@
 
 // param_pokoju room[7];
 
-// typedef struct {
-//     int i;
-// } test;
+struct pomieszczenie
+{
 
-// test t[20][20];
+   String name;
+   float temp_set;
+   float temp_actual;
+   float humidity;
+   float device;
+   bool manage;
+   bool heat_state;
+};
+
+
+struct level
+{
+   String name;
+   int id;
+   pomieszczenie dane[10];
+
+};
+
+level data[5];
 
 ///// / ////// / / / /  / /
 
@@ -65,7 +82,8 @@
 //    return 1;
 // }
 
-void printFile(const char *filename)
+void
+printFile(const char *filename)
 {
    // Open file for reading
    File file = sd.open(filename);
@@ -86,26 +104,28 @@ void printFile(const char *filename)
    file.close();
 }
 
-void readConfigJson(const char *filename, JsonObject &jsonReturn)
+void readConfigJson(const char *filename)
 {
-
    File file = sd.open(filename);
+   StaticJsonDocument<2500> jsonDoc;
+   // char JSString = (char)file.read();
 
-    char JSString = (char)file.read();
-
-   DeserializationError error = deserializeJson(jsonReturn, JSString);
+   DeserializationError error = deserializeJson(jsonDoc, file);
    if (error)
       Serial.println(F("Failed to read file, using default configuration"));
 
+   Serial.println("// " + jsonDoc["0"]["2"]["name"].as<String>());
+   Serial.println("// " + jsonDoc["1"]["4"]["name"].as<String>());
 
-    for (JsonPair keyValue : jsonReturn) {
-    
-    
-    Serial.print("key of object");
-    Serial.println(keyValue.key().c_str());
+   JsonObject documentRoot = jsonDoc.as<JsonObject>();
 
+    for (JsonPair keyValue : documentRoot)
+   {
 
-  }
+      Serial.println("key of object");
+      Serial.println(keyValue.key().c_str());
+      Serial.print("// " + jsonDoc[keyValue.key()]["4"]["name"].as<String>());
+   }
 
    // String output= "";
    //  serializeJson(jsonDoc,output );
@@ -113,7 +133,7 @@ void readConfigJson(const char *filename, JsonObject &jsonReturn)
 
    // Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
    // Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
-   
+
    file.close();
    //return jsonDoc;
 }
