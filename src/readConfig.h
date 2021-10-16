@@ -13,28 +13,28 @@
 // param_pokoju room[7];
 
 
-struct pomieszczenie
-{
+// struct pomieszczenie
+// {
 
-   String name;
-   float temp_set;
-   float temp_actual;
-   float humidity;
-   float device;
-   bool manage;
-   bool heat_state;
-};
+//    String name;
+//    float temp_set;
+//    float temp_actual;
+//    float humidity;
+//    float device;
+//    bool manage;
+//    bool heat_state;
+// };
 
 
-struct level
-{
-   String name;
-   int id;
-   pomieszczenie dane[10];
+// struct level
+// {
+//    String name;
+//    int id;
+//    pomieszczenie dane[10];
 
-};
+// };
 
-level data[5];
+// level data[5];
 
 ///// / ////// / / / /  / /
 
