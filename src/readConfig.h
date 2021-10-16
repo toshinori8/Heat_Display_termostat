@@ -12,6 +12,7 @@
 
 // param_pokoju room[7];
 
+
 struct pomieszczenie
 {
 
