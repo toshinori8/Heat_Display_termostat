@@ -1,0 +1,116 @@
+{
+    "0": {
+      "0": {
+        "name": "pracownia1",
+        "temp_set": 20,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "1": {
+        "name": "pracownia2",
+        "temp_set": 23,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "2": {
+        "name": "korytarz",
+        "temp_set": 24,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "3": {
+        "name": "pokoj1",
+        "temp_set": 12,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "4": {
+        "name": "pokoj2",
+        "temp_set": 18,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "5": {
+        "name": "Lazienka",
+        "temp_set": 25,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "6": {
+        "name": "garaz",
+        "temp_set": 25,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "name": "piwnica"
+    },
+    "1": {
+      "0": {
+        "name": "kuchnia",
+        "temp_set": 20,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "1": {
+        "name": "Sypialnia",
+        "temp_set": 19,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "2": {
+        "name": "Waleria",
+        "temp_set": 22,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "3": {
+        "name": "Lazienka",
+        "temp_set": 25,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "4": {
+        "name": "Przedpokoj",
+        "temp_set": 25,
+        "temp_actual": 12,
+        "humidity": 1634054256,
+        "heat_state": 1,
+        "device": 1634054256,
+        "manage": true
+      },
+      "name": "pietro"
+    }
+  }

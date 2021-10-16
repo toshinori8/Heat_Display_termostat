@@ -11,9 +11,10 @@ DueFlashStorage dueFlashStorage;
 #include "math.h"
 #include <arduino-timer.h>
 
+
 // file system object
 SdFat sd;
-
+#include <readConfig.h>
 auto timer = timer_create_default();
 
 // print stream
@@ -197,6 +198,13 @@ void setup()
       uText.print(myX, myY, "Card initialised...");
 
       delay(200);
+
+// printFile("rooms.json");
+      StaticJsonDocument<2500> jsonDoc;
+      readConfigJson("rooms.json", jsonDoc);
+ Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
+   Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
+
     }
   }
 
@@ -315,7 +323,7 @@ void loop()
 //#include <img_setupROOM.h>
 
 // APP CODE
-#include <readConfig.h>
+
 #include <update_gfx.h>
 #include <displayHomepage.h>
 #include <displayRooms.h>

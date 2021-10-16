@@ -6,7 +6,7 @@ bool readForecast(String jsonMessage)
 
 //jsonMessage.replace("\"", R"(\")");
 
-Serial.println(jsonMessage);
+// Serial.println(jsonMessage);
 
 StaticJsonDocument<1536> doc;
 DeserializationError error = deserializeJson(doc, jsonMessage.c_str());
@@ -77,7 +77,9 @@ float feels_like = doc["feels_like"];
   if (currentPage == 0)
         {
             updateHomepage();
-           
+
+
+
         }
 
     return 1;

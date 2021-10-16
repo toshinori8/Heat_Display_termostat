@@ -2,6 +2,12 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "memory": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "unordered_map": "cpp"
     }
 }
