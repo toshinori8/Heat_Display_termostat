@@ -1,40 +1,30 @@
 #include <Arduino.h>
-// #include <SDFat.h>
-// SdFat sd;
-// ///////// // // // /// //
-// typedef struct
-// {
-//   int temp_set;
-//   int temp_actual;
-//   int humidity;
-//   int heat_state;
-// } param_pokoju;
 
-// param_pokoju room[7];
+class roomParams {
 
-
-struct pomieszczenie
-{
-
-   String name;
-   float temp_set;
-   float temp_actual;
-   float humidity;
-   float device;
-   bool manage;
-   bool heat_state;
+  public: struct Rooms
+    {
+      char *name;
+      int id;
+      bool used;
+      float temp_set;
+      float temp_actual;
+      float humidity;
+      char device;
+      bool manage;
+      bool heat_state;
+    } rooms[6];
+  public: struct level
+    {
+      int id;
+      bool used;
+      char *name;
+      Rooms rooms[6];
+    } level[3];
 };
+roomParams params;
 
 
-struct level
-{
-   String name;
-   int id;
-   pomieszczenie dane[10];
-
-};
-
-level data[5];
 
 ///// / ////// / / / /  / /
 
@@ -83,8 +73,7 @@ level data[5];
 //    return 1;
 // }
 
-void
-printFile(const char *filename)
+void printFile(const char *filename)
 {
    // Open file for reading
    File file = sd.open(filename);
@@ -113,7 +102,7 @@ void readConfigJson(const char *filename)
 
    DeserializationError error = deserializeJson(jsonDoc, file);
    if (error)
-      Serial.println(F("Failed to read file, using default configuration"));
+      Serial.println(F("Failed to read file"));
 
    Serial.println("// " + jsonDoc["0"]["2"]["name"].as<String>());
    Serial.println("// " + jsonDoc["1"]["4"]["name"].as<String>());
@@ -127,6 +116,12 @@ void readConfigJson(const char *filename)
       Serial.println(keyValue.key().c_str());
       Serial.print("// " + jsonDoc[keyValue.key()]["4"]["name"].as<String>());
    }
+
+
+String output = "";
+   serializeJson(jsonDoc, output);
+   Serial.print(output);
+
 
    // String output= "";
    //  serializeJson(jsonDoc,output );

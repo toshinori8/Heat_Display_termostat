@@ -15,7 +15,12 @@ DueFlashStorage dueFlashStorage;
 // file system object
 SdFat sd;
 #include <readConfig.h>
+roomParams params; // parametry pokoi   ------------  level / room 
+
+
 auto timer = timer_create_default();
+
+
 
 // print stream
 //ArduinoOutStream cout(Serial);
@@ -155,6 +160,8 @@ int myY = 20;
 
 bool lockTouch = true;
 
+ String roomsJson = "";
+
 void setup()
 {
 
@@ -199,9 +206,15 @@ void setup()
 
       delay(200);
 
-// printFile("rooms.json");
+
     
+// Serial.println("-----------------------------");
       readConfigJson("rooms.json");
+// Serial.println("-----------------------------");
+
+//printFile("rooms.json");
+
+// Serial.println("-----------------------------");
 //  Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
 //    Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
 
