@@ -1,14 +1,17 @@
 void displayRooms()
 {
-
+   lockTouch =true;
     currentPage = 2;
 
+
     utft.clrScr();
+
 
     utft.setColor(75, 101, 44);
     utft.fillRect(1, 1, 320, 240);
     utft.setColor(210, 210, 210);
     utft.fillRect(58, 1, 319, 239);
+           myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
 
     //AEWA
     utft.setColor(147, 147, 157);
@@ -17,7 +20,7 @@ void displayRooms()
     utft.drawRect(62, 6, 179, 113);
 
 
-  uText.setForeground(100, 100, 110);   
+    uText.setForeground(100, 100, 110);   
     uText.print(75, 20, "SYPIALNIA");
 
   
@@ -38,7 +41,7 @@ void displayRooms()
 
     uText.setForeground(100, 100, 110);
 
- uText.print(200, 20, "WALERIA");
+    uText.print(200, 20, "WALERIA");
 
     uText.setFont(SegoeUISemibold28a);
     uText.print(200, 40, String(room[2].temp_actual));
@@ -116,6 +119,17 @@ void displayRooms()
     uText.setForeground(100, 100, 110);
 
     // utft.drawBitmap(8, 204, 30, 31, back);
-        myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
+
+   // Serial.print("lockTouch false");
+   //delay(200);
+
+   // delay(1200);
+   // lockTouch=false;
+
+
+      touchDelayStart = millis();
+      touchDelayRunning = true;
+
+
 
 }

@@ -1,7 +1,30 @@
 
-void displayHomepage()
+
+void updateHomepage()
 {
 
+	utft.setColor(80, 110, 50);
+	utft.fillRect(0, 100, 220, 181);
+
+	utft.setColor(97, 117, 44);
+	utft.fillRect(0, 180, 155, 230);
+
+	uText.setFont(SegoeUISemibold28a);
+	int8_t kerning[] = {-4, -4, -4, -4, -100, -8};
+	uText.print(110, 97, String(temp_outside_today) + "°C", kerning);
+	uText.setFont(SegoeUI13);
+
+	uText.print(5, 100, "MIN ");
+	uText.print(55, 100, String(temp_min_today));
+	uText.print(5, 120, "MAX ");
+	uText.print(55, 120, String(temp_max_today));
+
+	uText.print(20, 185, String(humidity_today) + " hum");
+	uText.print(20, 205, String(presure_today) + " Hpa");
+}
+
+void displayHomepage()
+{
 
 	currentPage = 0;
 	utft.clrScr();
@@ -12,18 +35,7 @@ void displayHomepage()
 	utft.setBackColor(255, 255, 255);
 	uText.setForeground(255, 255, 255);
 
-	uText.setFont(SegoeUISemibold28a);
+	//myFiles.load(0, 0, 320, 240, "presure.raw", 100, 0);
 
-	int8_t kerning[] = {-4, -4, -4, -4, -100, -8};
-	uText.print(100, 111, String(temp_outside_today) + "°C", kerning);
-
-	uText.setFont(SegoeUI13);
-
-	uText.print(10, 110, "MIN");
-	uText.print(40, 110, String(temp_min_today));
-	uText.print(10, 130, "MAX");
-	uText.print(40, 130, String(temp_max_today));
-
-	uText.print(40, 170, String(humidity_today) + " %");
-	uText.print(115, 170, String(presure_today) + " Hpa");
+	updateHomepage();
 };

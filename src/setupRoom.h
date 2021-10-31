@@ -47,12 +47,12 @@ int setupRoom(String roomN)
         selectedROOM = 6;
     }
    myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
-    uText.print(75, 40, String(room[selectedROOM].temp_actual));
-    uText.setForeground(100, 100, 110);
-    uText.setFont(SegoeUI13);
-    uText.print(80, 80, String(room[selectedROOM].temp_set));
-    uText.setForeground(100, 100, 110);
-    uText.print(150, 80, String(room[selectedROOM].humidity));
+    // uText.print(75, 40, String(level[0]room[selectedROOM].temp_actual));
+    // uText.setForeground(100, 100, 110);
+    // uText.setFont(SegoeUI13);
+    // uText.print(80, 80, String(level[0]room[selectedROOM].temp_set));
+    // uText.setForeground(100, 100, 110);
+    // uText.print(150, 80, String(level[0]room[selectedROOM].humidity));
 
     return 1;
 }

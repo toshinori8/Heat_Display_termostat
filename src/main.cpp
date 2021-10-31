@@ -8,11 +8,20 @@
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
-
 #include "math.h"
+#include <arduino-timer.h>
+
 
 // file system object
 SdFat sd;
+#include <readConfig.h>
+roomParams params; // parametry pokoi   ------------  level / room 
+
+
+auto timer = timer_create_default();
+
+
+
 // print stream
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
@@ -29,6 +38,7 @@ unsigned long millisHome = 0;      // used for returning home after configured t
 
 int x, y;
 int currentPage;
+int bootup;
 int selectedROOM;
 #define null NULL
 #define TOUCH_ORIENTATION LANDSCAPE
@@ -38,10 +48,12 @@ File configFile;
 // #define ESP8266 Serial1; // Serial 9600
 
 int updateInt = 550000; //miliseconds
+unsigned long previousMillis = 0;
 int update_timer;
 int sleep_timer = 0; // 1000
 int sleep_state = 0;
 int sleep_time = 1000000;
+
 int is_back = 0;
 String option;
 String input;
@@ -54,7 +66,7 @@ int ready = 0;
 
 /// USER APP
 
-// DEFINES ROOM TEMPERATURE ARRAY
+// DEFINES ROOM TEMPERATURE ARRAY FOR First Floor.
 typedef struct
 {
   int temp_set;
@@ -66,12 +78,31 @@ typedef struct
 param_pokoju room[7];
 // DEFINES ROOM TEMPERATURE ARRAY
 
-int temp_outside_today = 15;           // temperatura na zewnątrz.
-int temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
-int temp_min_today = 0;                //  najzimniej dzisiaj
-int temp_max_today = 0;                //  najcieplej dzisiaj
-int presure_today = 0;                   //  cisnienie baryczne aktualne
-int humidity_today = 0;                  //  wilgotność aktualna
+DynamicJsonDocument level(384);
+JsonObject piwnica = level.createNestedObject("piwnica");
+JsonObject pietro = level.createNestedObject("pietro");
+
+
+
+
+// piwnica["temp_set"]= 0 ;
+// piwnica["temp_actual"]= 0 ;
+// piwnica["humidity"]= 0 ;
+// piwnica["heat_state"]= 0 ;
+// piwnica["heat_state"]= 0 ;
+
+// pietro["temp_set"]= 0 ;
+// pietro["temp_actual"]= 0 ;
+// pietro["humidity"]= 0 ;
+// pietro["heat_state"]= 0 ;
+
+
+float temp_outside_today = 15;           // temperatura na zewnątrz.
+float temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
+float temp_min_today = 0;                //  najzimniej dzisiaj
+float temp_max_today = 0;                //  najcieplej dzisiaj
+float presure_today = 0;                 //  cisnienie baryczne aktualne
+float humidity_today = 0;                //  wilgotność aktualna
 
 const char *temp_outside_today_01 = "16"; // temperatura na zewnątrz.
 const char *temp_min_today_01 = "0";      //  najzimniej dzisiaj
@@ -106,13 +137,16 @@ extern prog_uint16_t img_hum[494] PROGMEM;
 extern prog_uchar SegoeUI13[1855] PROGMEM;
 extern prog_uchar SegoeUISemibold28a[10780] PROGMEM;
 
-
+unsigned long touchDelayStart = 0; // touch delay
+bool touchDelayRunning = false;
 
 void displayHomepage();
+bool readConfig();
+bool writeConfig();
 void displayRooms();
 bool readForecast(String jsonMessage);
-bool readFromSensors();
-void sleep_timerF(int stime);
+bool readFromSensors(String jsonMessage);
+
 void drawFrame(int x1, int y1, int x2, int y2);
 void displayWifiIcon(int state);
 
@@ -121,14 +155,17 @@ int setupRoom(String roomN);
 int update_gfx(int a, int b, int c);
 int roundfunction(float);
 
- int myX= 200; 
- int myY= 20;
+int myX = 200;
+int myY = 20;
+
+bool lockTouch = true;
+
+ String roomsJson = "";
 
 void setup()
 {
 
-  // READ  ROOM DATA
-
+  bootup = 1;
   currentPage = 0; // aktualna strona
 
   Serial.begin(9600);
@@ -144,19 +181,13 @@ void setup()
 
   utft.clrScr();
 
-
-  
-
-  //utft.fillScr(75, 101, 44);
- 
-  utft.setColor(255,255,255);
-  utft.setBackColor(0,0,0);
-  uText.setBackground(0,0,0);
+  utft.setColor(255, 255, 255);
+  utft.setBackColor(0, 0, 0);
+  uText.setBackground(0, 0, 0);
   uText.setFont(SegoeUI13);
-  uText.print(200,20,"Wczytuje dane..");
+  uText.print(200, 20, "Wczytuje dane..");
 
   bool mysd = 0;
- 
   while (!mysd)
   {
 
@@ -165,75 +196,107 @@ void setup()
 
       Serial.println(F("Card failed, or not present"));
       Serial.println(F("Retrying...."));
-
     }
     else
     {
       mysd = 1;
-      
-
       myFiles.load(0, 0, 320, 240, "LOGOCOM.RAW", 100, 0);
       Serial.println(F("Card initialised."));
-      uText.print(myX,myY,"Card initialised...");
+      uText.print(myX, myY, "Card initialised...");
+
       delay(200);
+
+
+    
+// Serial.println("-----------------------------");
+      readConfigJson("rooms.json");
+// Serial.println("-----------------------------");
+
+//printFile("rooms.json");
+
+// Serial.println("-----------------------------");
+//  Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
+//    Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
+
     }
   }
 
-    utft.setColor(255,255,255);
-    utft.fillRect(100, 0, 319, 29);
-    utft.setColor(100,100,100);
-    utft.setBackColor(100,100,100);
-    uText.setForeground(100,100,100);
-
-    delay(300);
-    uText.print(myX,myY,"WiFi");
-    delay(300);
+  utft.setColor(255, 255, 255);
+  utft.fillRect(100, 0, 319, 29);
+  utft.setColor(100, 100, 100);
+  utft.setBackColor(100, 100, 100);
+  uText.setForeground(100, 100, 100);
+  delay(300);
+  uText.print(myX, myY, "WiFi");
+  delay(300);
 
   // uText.print(20, 50, "Wczytuje dane");
   // delay(1000);
   // uText.print(20, 70, "Inicjuje połączenie WiFi");
   // delay(1000);
   // uText.print(20, 90, "Wczytuje dane recovery");
-  //readFromSensors();
-  
   delay(1500);
-  
-  readFromSensors();
-
+  //readFromSensors();
   myTouch.InitTouch(TOUCH_ORIENTATION);
   myTouch.setPrecision(PREC_EXTREME);
 
-  configFile = sd.open("datalog.raw", FILE_READ);
+  displayHomepage();
 }
 
 void loop()
 {
+
   unsigned long currentMillis = millis(); // get current millis
-  sleep_timerF(sleep_time);
+
+  sleep_timer++;
+  if (sleep_state == 0 && sleep_timer == sleep_time)
+  {
+    sleep_timer = 0;            // reseting sleeptimer
+    sleep_state = 1;            // setting sleep state to ON
+    digitalWrite(VCC_lcd, LOW); // turning OFF display
+  }
+  if (myTouch.dataAvailable() && sleep_state == 1)
+  {
+    digitalWrite(VCC_lcd, HIGH); // TURN DISPLAY ON
+    sleep_timer = 0;             //
+    sleep_state = 0;
+  }
+
   String message = "";
   while (Serial1.available() > 0)
   {
     message = Serial1.readString();
     delay(200);
-    if (message.indexOf("wifi connected") > 0)
+    if (message.indexOf("wifi §§§§") > 0)
     {
       delay(600);
       Serial1.println("get forecast_5h");
+      Serial1.println("mqttserver 192.168.8.150");
+      Serial.print("Connecting MQTT server...");
     }
-    if (message.indexOf("message") > 0)
-    {
-      if(readForecast(message)){
 
-          if (currentPage == 0)
-        {
-            displayHomepage();
-        }
-      };
+    if (message.indexOf("cod\":\"forecast") > 0)
+    {
+
+      readForecast(message);
+
+      if (currentPage == 0)
+      {
+        Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
+      }
     }
+
+    if (message.indexOf("home/MQTTGateway/BTtoMQTT") > 0)
+    {
+
+      readFromSensors(message);
+    }
+
     else
     {
-      // print raw message 
-      Serial.println("RAW MESSAGE: " + message);
+      // print raw message
+
+      // Serial.println("RAW MESSAGE: " + message);
     }
   }
   while (Serial.available() > 0)
@@ -241,13 +304,26 @@ void loop()
     char d = Serial.read();
     Serial1.write(d);
   }
+
+  // TOUCH DELAY
+  if (touchDelayRunning && ((millis() - touchDelayStart) >= 2 * 500))
+  {
+    touchDelayRunning = false; // finished delay -- single shot, once only
+    lockTouch = false;         // turn led off
+    // Serial.println("Touch przywrocony ");
+  }
+  if (currentMillis - previousMillis >= 40 * 10000)
+  {
+    previousMillis = currentMillis;
+  }
+
   if (currentMillis - prevMillisTouch > 300) // make sure it's been .5 sec between touches
   {
-    //configFile.write((const uint8_t *)&room, sizeof(room));
+
     prevMillisTouch = currentMillis; // reset the touch timer
     millisDim = currentMillis;       // reset screen dim timer
     millisHome = currentMillis;      // reset return home timer
-                                     // processMyTouch();
+
 #include <touchSetup.h>
   }
 }
@@ -260,10 +336,11 @@ void loop()
 //#include <img_setupROOM.h>
 
 // APP CODE
+
 #include <update_gfx.h>
 #include <displayHomepage.h>
 #include <displayRooms.h>
 #include <setupRoom.h>
-#include <parseJSON.h>
+#include <readForecast.h>
 #include <functions.h>
 #include <readFromSensors.h>
