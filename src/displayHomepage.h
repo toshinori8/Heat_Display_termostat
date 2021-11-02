@@ -36,6 +36,7 @@ void displayHomepage()
 	uText.setForeground(255, 255, 255);
 
 	//myFiles.load(0, 0, 320, 240, "presure.raw", 100, 0);
-
+writeConfigJson("rooms.json");
 	updateHomepage();
+
 };

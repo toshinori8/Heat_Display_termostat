@@ -1,49 +1,61 @@
 bool readFromSensors(String jsonMessage)
 {
-///
+
 int responns = 0;
 
-/// get data and set array 
+// Extract Json
+int sta= jsonMessage.indexOf("{");
+int en_= jsonMessage.indexOf("}");
+String jsonExt = jsonMessage.substring(sta,en_+1);
 
-// ///  AE
-//     level[0]room[1].temp_set = 1;
-//     level[0]room[1].temp_actual = 1;
-//     level[0]room[1].humidity = 1;
-// ///  Waleria
-//     level[0]room[2].temp_set = 2;
-//     level[0]room[2].temp_actual = 2;
-//     level[0]room[2].humidity = 2;
-// ///  Kuchnia
-//     level[0]room[3].temp_set = 3;
-//     level[0]room[3].temp_actual = 3;
-//     level[0]room[3].humidity = 3;
-// ///  Łazienka
-//     level[0]room[4].temp_set = 4;
-//     level[0]room[4].temp_actual = 4;
-//     level[0]room[4].humidity = 4;
-// ///  Przedpokój
-//     level[0]room[5].temp_set = 5;
-//     level[0]room[5].temp_actual = 5;
-//     level[0]room[5].humidity = 5;
-// ///  Klatka schodowa
-//     level[0]room[6].temp_set = 6;
-//     level[0]room[6].temp_actual = 6;
-//     level[0]room[6].humidity = 6;
-//     //room[2] = record_type{1,2};
- // param_pokoju configurationFromFlash; // create a temporary struct
+// Serial.print("------------------");
+// Serial.println(jsonExt);
+// Serial.print("------------------");
+
+
+StaticJsonDocument<192> sensorData;
+
+DeserializationError error = deserializeJson(sensorData, jsonExt);
+
+if (error) {
+  Serial.print(F("sensor message failed: "));
+  Serial.println(error.c_str());
   
-        // if (jsonMessage.indexOf("sensors") > 0){
+}
 
-        //     DynamicJsonDocument doc(400);
+// ClearGrass Temp & RH ////  "LYWSD02"
+//  tempc hum id
 
-        //     deserializeJson(doc,jsonMessage);
-        
-        
-        
-        
-        // }
-    
+if (sensorData.containsKey("tempc")) {
+  const char* macAddr = sensorData["id"];
 
-responns = 1;
-    return responns;
+  float tempc = sensorData["tempc"];
+  updateJsonConfig_sensor(macAddr,"tempc", tempc);
+  
+}
+if (sensorData.containsKey("hum")) {
+  const char* macAddr = sensorData["id"];
+
+  float hum = sensorData["hum"];
+  updateJsonConfig_sensor(macAddr,"hum", hum);
+  
+}
+
+
+
+
+
+//const char* id = sensorData["id"]; // "58:2D:34:10:D5:EC"
+//const char* name = sensorData["name"]; // "ClearGrass Temp & RH"
+//int rssi = sensorData["rssi"]; // -92
+//const char* model = sensorData["model"]; // "CGG1"
+//float temp = sensorData["tempc"]; // 18.8
+//float tempf = sensorData["tempf"]; // 65.84
+//float hum = sensorData["hum"]; // 58.1
+
+
+
+
+
+
 }

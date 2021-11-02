@@ -25,12 +25,12 @@ void displayRooms()
 
   
     uText.setFont(SegoeUISemibold28a);
-    uText.print(75, 40, String(room[1].temp_actual));
+    uText.print(75, 40, String(params.level[1].rooms[1].temp_actual,2));
     uText.setForeground(100, 100, 110);
     uText.setFont(SegoeUI13);
-    uText.print(80, 80, String(room[1].temp_set));
+    uText.print(80, 80, String(params.level[1].rooms[1].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(150, 80, String(room[1].humidity));
+    uText.print(150, 80, String(params.level[1].rooms[1].humidity,1));
 
 
  // WALERIA
@@ -44,12 +44,12 @@ void displayRooms()
     uText.print(200, 20, "WALERIA");
 
     uText.setFont(SegoeUISemibold28a);
-    uText.print(200, 40, String(room[2].temp_actual));
+    uText.print(200, 40, String(params.level[1].rooms[2].temp_actual,2));
     uText.setForeground(100, 100, 110);
     uText.setFont(SegoeUI13);
-    uText.print(205, 80, String(room[2].temp_set));
+    uText.print(205, 80, String(params.level[1].rooms[2].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(273, 80, String(room[2].humidity));
+    uText.print(273, 80, String(params.level[1].rooms[2].humidity,1));
 
 
 
@@ -65,12 +65,12 @@ void displayRooms()
 
     uText.setFont(SegoeUISemibold28a);
 
-    uText.print(75, 155, String(room[3].temp_actual));
+    uText.print(75, 155, String(params.level[1].rooms[0].temp_actual,2));
     uText.setForeground(100, 100, 110);
     uText.setFont(SegoeUI13);
-    uText.print(80, 195, String(room[3].temp_set));
+    uText.print(80, 195, String(params.level[1].rooms[0].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(150, 195, String(room[3].humidity));
+    uText.print(150, 195, String(params.level[1].rooms[0].humidity,1));
 
     // Przedpokoj
     utft.setColor(147, 147, 157);
@@ -80,14 +80,14 @@ void displayRooms()
 
     uText.setForeground(100, 100, 110);
 
-    //uText.print(190, 150, "Przedpokoj");
+    uText.print(190, 150, "");
 
     uText.setFont(SegoeUI13);
-    uText.print(190, 150, String(room[4].temp_actual));
+    uText.print(190, 150, String(params.level[1].rooms[4].temp_actual,2));
     uText.setForeground(100, 100, 110);
-    uText.print(190, 170, String(room[4].temp_set));
+    uText.print(190, 170, String(params.level[1].rooms[4].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(190, 200, String(room[4].humidity));
+    uText.print(190, 200, String(params.level[1].rooms[4].humidity,1));
 
     /// łazienka
     utft.setColor(147, 147, 157);
@@ -98,11 +98,11 @@ void displayRooms()
     uText.setForeground(100, 100, 110);
    // uText.print(250, 180, "Lazienka");
     uText.setFont(SegoeUI13);
-    uText.print(250, 180, String(room[5].temp_actual));
+    uText.print(250, 180, String(params.level[1].rooms[3].temp_actual,2));
     uText.setForeground(100, 100, 110);
-    uText.print(250, 198, String(room[5].temp_set));
+    uText.print(250, 198, String(params.level[1].rooms[3].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(250, 215, String(room[5].humidity));
+    uText.print(250, 215, String(params.level[1].rooms[3].humidity,1));
 
     /// schody
     utft.setColor(147, 147, 157);
@@ -113,9 +113,9 @@ void displayRooms()
     uText.setForeground(100, 100, 110);
    // uText.print(250, 128, "Schody");
     uText.setFont(SegoeUI13);
-    uText.print(250, 128, String(room[6].temp_actual));
+    uText.print(250, 128, String(params.level[1].rooms[5].temp_actual,2));
     uText.setForeground(100, 100, 110);
-    uText.print(250, 146, String(room[6].temp_set));
+    uText.print(250, 146, String(params.level[1].rooms[5].temp_set,2));
     uText.setForeground(100, 100, 110);
 
     // utft.drawBitmap(8, 204, 30, 31, back);
@@ -126,7 +126,7 @@ void displayRooms()
    // delay(1200);
    // lockTouch=false;
 
-
+      
       touchDelayStart = millis();
       touchDelayRunning = true;
 

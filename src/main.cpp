@@ -14,15 +14,41 @@ DueFlashStorage dueFlashStorage;
 
 // file system object
 SdFat sd;
-#include <readConfig.h>
-roomParams params; // parametry pokoi   ------------  level / room 
+
+class roomParams {
+  public: struct Rooms
+    {
+      String name;
+      int id;
+      bool used;
+      float temp_set;
+      float temp_actual;
+      int humidity;
+      String device;
+      bool manage;
+      bool heat_state;
+    } rooms[6];
+  public: struct level
+    {
+      int id;
+      bool used;
+      String name;
+      Rooms rooms[7];
+    } level[3];
+};
+
+
+
+roomParams params; // parametry pokoi   ------------  level / room / attributes
+
+
+
 
 
 auto timer = timer_create_default();
 
 
 
-// print stream
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
 // SdVolume volume;
@@ -64,38 +90,8 @@ int VCC_lcd = 15;    // Pin 15 zasilanie LCD
 
 int ready = 0;
 
-/// USER APP
 
-// DEFINES ROOM TEMPERATURE ARRAY FOR First Floor.
-typedef struct
-{
-  int temp_set;
-  int temp_actual;
-  int humidity;
-  int heat_state;
-} param_pokoju;
-
-param_pokoju room[7];
-// DEFINES ROOM TEMPERATURE ARRAY
-
-DynamicJsonDocument level(384);
-JsonObject piwnica = level.createNestedObject("piwnica");
-JsonObject pietro = level.createNestedObject("pietro");
-
-
-
-
-// piwnica["temp_set"]= 0 ;
-// piwnica["temp_actual"]= 0 ;
-// piwnica["humidity"]= 0 ;
-// piwnica["heat_state"]= 0 ;
-// piwnica["heat_state"]= 0 ;
-
-// pietro["temp_set"]= 0 ;
-// pietro["temp_actual"]= 0 ;
-// pietro["humidity"]= 0 ;
-// pietro["heat_state"]= 0 ;
-
+float hysterizRoom = 0.25;
 
 float temp_outside_today = 15;           // temperatura na zewnątrz.
 float temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
@@ -146,6 +142,9 @@ bool writeConfig();
 void displayRooms();
 bool readForecast(String jsonMessage);
 bool readFromSensors(String jsonMessage);
+void readConfigJson(const char *filename);
+void writeConfigJson(const char *filename);
+
 
 void drawFrame(int x1, int y1, int x2, int y2);
 void displayWifiIcon(int state);
@@ -190,7 +189,7 @@ void setup()
   bool mysd = 0;
   while (!mysd)
   {
-
+      delay(300);
     if (!sd.begin(SD_CHIP_SELECT, SD_SCK_MHZ(41)))
     {
 
@@ -202,21 +201,9 @@ void setup()
       mysd = 1;
       myFiles.load(0, 0, 320, 240, "LOGOCOM.RAW", 100, 0);
       Serial.println(F("Card initialised."));
-      uText.print(myX, myY, "Card initialised...");
-
-      delay(200);
-
-
-    
-// Serial.println("-----------------------------");
+      
       readConfigJson("rooms.json");
-// Serial.println("-----------------------------");
-
-//printFile("rooms.json");
-
-// Serial.println("-----------------------------");
-//  Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
-//    Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
+      delay(300);
 
     }
   }
@@ -230,12 +217,6 @@ void setup()
   uText.print(myX, myY, "WiFi");
   delay(300);
 
-  // uText.print(20, 50, "Wczytuje dane");
-  // delay(1000);
-  // uText.print(20, 70, "Inicjuje połączenie WiFi");
-  // delay(1000);
-  // uText.print(20, 90, "Wczytuje dane recovery");
-  delay(1500);
   //readFromSensors();
   myTouch.InitTouch(TOUCH_ORIENTATION);
   myTouch.setPrecision(PREC_EXTREME);
@@ -267,7 +248,7 @@ void loop()
   {
     message = Serial1.readString();
     delay(200);
-    if (message.indexOf("wifi §§§§") > 0)
+    if (message.indexOf("wifi") > 0)
     {
       delay(600);
       Serial1.println("get forecast_5h");
@@ -288,7 +269,8 @@ void loop()
 
     if (message.indexOf("home/MQTTGateway/BTtoMQTT") > 0)
     {
-
+    Serial.println("Connected to MQTTGateway");
+     Serial.println("Subscribed to sensors");
       readFromSensors(message);
     }
 
@@ -336,7 +318,7 @@ void loop()
 //#include <img_setupROOM.h>
 
 // APP CODE
-
+#include <readConfig.h>
 #include <update_gfx.h>
 #include <displayHomepage.h>
 #include <displayRooms.h>

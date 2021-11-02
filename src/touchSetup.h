@@ -80,31 +80,34 @@ if (myTouch.dataAvailable())
         // Back Button
         if ((x >= 2) && (x <= 54) && (y >= 170) && (y <= 240))
         {
-            if (configFile.available())
-            {
-                configFile.read((uint8_t *)&room, sizeof(room));
-            }
+            // if (configFile.available())
+            // {
+            //     configFile.read((uint8_t *)&room, sizeof(room));
+            // }
             displayRooms();
         }
         // BUTTON UP 185, 8, 316, 53
         if ((x >= 190) && (x <= 313) && (y >= 0) && (y <= 53))
         {
-            room[selectedROOM].temp_set = room[selectedROOM].temp_set + 1;
-            //Serial.println(String(room[selectedROOM].temp_set));
+
+
+            
+            params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set + hysterizRoom;
+            
             update_gfx(
-                room[selectedROOM].temp_set,
-                room[selectedROOM].temp_actual,
-                room[selectedROOM].humidity);
+                params.level[1].rooms[selectedROOM].temp_set,
+                params.level[1].rooms[selectedROOM].temp_actual,
+                params.level[1].rooms[selectedROOM].humidity);
         }
 
         // BUTTON DOWN 188, 63, 314, 109
         if ((x >= 190) && (x <= 313) && (y >= 60) && (y <= 100))
         {
-            room[selectedROOM].temp_set = room[selectedROOM].temp_set - 1;
+            params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set - hysterizRoom;
             update_gfx(
-                room[selectedROOM].temp_set,
-                room[selectedROOM].temp_actual,
-                room[selectedROOM].humidity);
+                params.level[1].rooms[selectedROOM].temp_set,
+                params.level[1].rooms[selectedROOM].temp_actual,
+                params.level[1].rooms[selectedROOM].humidity);
         }
     }
 
