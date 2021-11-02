@@ -8,9 +8,9 @@ int sta= jsonMessage.indexOf("{");
 int en_= jsonMessage.indexOf("}");
 String jsonExt = jsonMessage.substring(sta,en_+1);
 
-// Serial.print("------------------");
-// Serial.println(jsonExt);
-// Serial.print("------------------");
+Serial.print("------------------");
+Serial.println(jsonExt);
+Serial.print("------------------");
 
 
 StaticJsonDocument<192> sensorData;
