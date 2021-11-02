@@ -94,6 +94,8 @@ if (myTouch.dataAvailable())
             
             params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set + hysterizRoom;
             
+
+
             update_gfx(
                 params.level[1].rooms[selectedROOM].temp_set,
                 params.level[1].rooms[selectedROOM].temp_actual,

@@ -36,7 +36,7 @@ if (sensorData.containsKey("tempc")) {
 if (sensorData.containsKey("hum")) {
   const char* macAddr = sensorData["id"];
 
-  float hum = sensorData["hum"];
+  int hum = sensorData["hum"];
   updateJsonConfig_sensor(macAddr,"hum", hum);
   
 }

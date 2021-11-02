@@ -53,7 +53,7 @@ int setupRoom(String roomN)
     uText.setFont(SegoeUI13);
     uText.print(80, 80, String(params.level[1].rooms[selectedROOM].temp_set,2));
     uText.setForeground(100, 100, 110);
-    uText.print(150, 80, String(params.level[1].rooms[selectedROOM].humidity,1));
+    uText.print(150, 80, String(params.level[1].rooms[selectedROOM].humidity));
 
     return 1;
 }

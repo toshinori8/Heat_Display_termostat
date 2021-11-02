@@ -151,7 +151,7 @@ void displayWifiIcon(int state);
 
 int setupRoom(String roomN);
 
-int update_gfx(int a, int b, int c);
+int update_gfx(float a, float b, int c);
 int roundfunction(float);
 
 int myX = 200;
@@ -264,13 +264,29 @@ void loop()
       if (currentPage == 0)
       {
         Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
+        
       }
+      
     }
+    if(message.indexOf("[mqtt connected]")){
+            Serial.println("Connected to MQTTGateway");
+            Serial.println("Subscribed to sensors");
 
+    }
+    if(message.indexOf("[mqtt not connected]")){
+            Serial.println("[mqtt not connected]");
+           
+
+    }
+    if(message.indexOf("[subscription added]")){
+            Serial.println("[subscription added]");
+           
+
+    }
+    
     if (message.indexOf("home/MQTTGateway/BTtoMQTT") > 0)
     {
-    Serial.println("Connected to MQTTGateway");
-     Serial.println("Subscribed to sensors");
+   
       readFromSensors(message);
     }
 
