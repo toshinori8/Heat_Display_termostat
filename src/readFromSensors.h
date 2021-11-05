@@ -1,7 +1,7 @@
 bool readFromSensors(String jsonMessage)
 {
 
-int responns = 0;
+
 
 // Extract Json
 int sta= jsonMessage.indexOf("{");
@@ -40,7 +40,13 @@ if (sensorData.containsKey("hum")) {
   updateJsonConfig_sensor(macAddr,"hum", hum);
   
 }
+if (sensorData.containsKey("bat")) {
+  const char* macAddr = sensorData["id"];
 
+  int bat = sensorData["bat"];
+  updateJsonConfig_sensor(macAddr,"bat", bat);
+  
+}
 
 
 

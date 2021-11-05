@@ -23,7 +23,7 @@ if (myTouch.dataAvailable())
             displayRooms();
         }
     }
-    if (currentPage == 2 && lockTouch==false) // display Rooms
+    if (currentPage == 2 && lockTouch == false) // display Rooms
     {
         // Back Button
         if ((x >= 2) && (x <= 54) && (y >= 170) && (y <= 240))
@@ -90,11 +90,17 @@ if (myTouch.dataAvailable())
         if ((x >= 190) && (x <= 313) && (y >= 0) && (y <= 53))
         {
 
-
-            
             params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set + hysterizRoom;
-            
 
+            if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
+            {
+
+                params.level[1].rooms[selectedROOM].heat_state == true;
+            }
+            else
+            {
+                params.level[1].rooms[selectedROOM].heat_state = false;
+            }
 
             update_gfx(
                 params.level[1].rooms[selectedROOM].temp_set,
@@ -105,13 +111,21 @@ if (myTouch.dataAvailable())
         // BUTTON DOWN 188, 63, 314, 109
         if ((x >= 190) && (x <= 313) && (y >= 60) && (y <= 100))
         {
+           
             params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set - hysterizRoom;
+            if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
+            {
+                params.level[1].rooms[selectedROOM].heat_state == 1;
+            }
+            else
+            {
+                params.level[1].rooms[selectedROOM].heat_state = 0;
+            }
+
             update_gfx(
                 params.level[1].rooms[selectedROOM].temp_set,
                 params.level[1].rooms[selectedROOM].temp_actual,
                 params.level[1].rooms[selectedROOM].humidity);
         }
     }
-
-
 }

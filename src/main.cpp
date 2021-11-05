@@ -269,17 +269,17 @@ void loop()
       
     }
     if(message.indexOf("mqtt connected")){
-            Serial.println("Connected to MQTTGateway");
-            Serial.println("Subscribed to sensors");
+          //  Serial.println("Connected to MQTTGateway");
+          //  Serial.println("Subscribed to sensors");
 
     }
     if(message.indexOf("mqtt not connected")){
-            Serial.println("[mqtt not connected]");
+            // Serial.println("[mqtt not connected]");
            
 
     }
     if(message.indexOf("subscription added")){
-            Serial.println("[subscription added]");
+            // Serial.println("[subscription added]");
            
 
     }
