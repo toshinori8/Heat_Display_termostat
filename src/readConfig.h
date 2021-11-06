@@ -202,10 +202,22 @@ void updateJsonConfig_sensor(String device, String dataTy, float value){
 
                if(params.level[i].rooms[g].device==device){
                
+                  
+
                   Serial.println("Room " + device + " updated");
                   if(dataTy=="tempc"){
+                  
                         jsonDoc[sI][Sg]["temp_actual"]=value;
                         params.level[i].rooms[g].temp_actual=value;
+                  
+                        /// Update heat_state: 
+                        if(params.level[i].rooms[g].temp_set > params.level[i].rooms[g].temp_actual){
+                           params.level[1].rooms[selectedROOM].heat_state = 1;
+                        }else{
+                           params.level[1].rooms[selectedROOM].heat_state = 0;
+                        }
+
+                  
                   }
                   if(dataTy=="hum"){
                         jsonDoc[sI][Sg]["humidity"]=value;

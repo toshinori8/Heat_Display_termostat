@@ -78,7 +78,7 @@ unsigned long previousMillis = 0;
 int update_timer;
 int sleep_timer = 0; // 1000
 int sleep_state = 0;
-int sleep_time = 1000000;
+int sleep_time = 90000000; // ustawić na 1000000
 
 int is_back = 0;
 String option;

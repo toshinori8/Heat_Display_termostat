@@ -95,11 +95,17 @@ if (myTouch.dataAvailable())
             if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
             {
 
-                params.level[1].rooms[selectedROOM].heat_state == true;
+                params.level[1].rooms[selectedROOM].heat_state = "1";
+                
+                Serial.print("heatState powinno być 1 jest");
+                Serial.println(params.level[1].rooms[selectedROOM].heat_state);
             }
             else
             {
-                params.level[1].rooms[selectedROOM].heat_state = false;
+                params.level[1].rooms[selectedROOM].heat_state = "0";
+                
+                Serial.print("heatState powinno być 0 jest");
+                Serial.println(params.level[1].rooms[selectedROOM].heat_state);
             }
 
             update_gfx(
@@ -115,11 +121,17 @@ if (myTouch.dataAvailable())
             params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set - hysterizRoom;
             if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
             {
-                params.level[1].rooms[selectedROOM].heat_state == 1;
+                params.level[1].rooms[selectedROOM].heat_state = 1;
+
+                Serial.print("heatState powinno być 1 jest");
+                Serial.println(params.level[1].rooms[selectedROOM].heat_state);
             }
             else
             {
                 params.level[1].rooms[selectedROOM].heat_state = 0;
+                
+                Serial.print("heatState powinno być 0 jest");
+                Serial.println(params.level[1].rooms[selectedROOM].heat_state);
             }
 
             update_gfx(

@@ -48,14 +48,14 @@ void displayRooms()
    if (String(params.level[1].rooms[2].heat_state) == "1")
    {
       utft.setColor(243, 87, 89);
-      utft.fillRect(60, 117, 181, 236);
-      utft.fillRect(61, 118, 180, 235);
-      utft.fillRect(62, 119, 179, 234);
+      utft.fillRect(183, 4, 316, 115);
+      utft.fillRect(184, 5, 315, 114);
+      utft.fillRect(185, 6, 314, 113);
    }
    utft.setColor(147, 147, 157);
-   utft.drawRect(60, 117, 181, 236);
-   utft.drawRect(61, 118, 180, 235);
-   utft.drawRect(62, 119, 179, 234);
+   utft.drawRect(183, 4, 316, 115);
+   utft.drawRect(184, 5, 315, 114);
+   utft.drawRect(185, 6, 314, 113);
 
    uText.setForeground(100, 100, 110);
 
@@ -71,17 +71,26 @@ void displayRooms()
 
    /// KUCHNIA
 
+   Serial.println("Display Rooms:::::");
+   Serial.println("Heat State Kuchnia   "+String(params.level[1].rooms[0].heat_state) );
+
+
    if (String(params.level[1].rooms[0].heat_state) == "1")
    {
+    
       utft.setColor(243, 87, 89);
-      utft.fillRect(183, 4, 316, 115);
-      utft.fillRect(184, 5, 315, 114);
-      utft.fillRect(185, 6, 314, 113);
+      utft.fillRect(60, 117, 181, 236);
+      utft.fillRect(61, 118, 180, 235);
+      utft.fillRect(62, 119, 179, 234);
    }
-   utft.setColor(147, 147, 157);
-   utft.drawRect(183, 4, 316, 115);
-   utft.drawRect(184, 5, 315, 114);
-   utft.drawRect(185, 6, 314, 113);
+   
+
+utft.setColor(147, 147, 157);
+   utft.drawRect(60, 117, 181, 236);
+   utft.drawRect(61, 118, 180, 235);
+   utft.drawRect(62, 119, 179, 234);
+
+
 
    uText.setForeground(100, 100, 110);
 
@@ -97,6 +106,9 @@ void displayRooms()
    uText.print(150, 195, String(params.level[1].rooms[0].humidity));
 
    // Przedpokoj
+
+
+
    if (String(params.level[1].rooms[4].heat_state) == "1")
    {
       utft.setColor(243, 87, 89);
@@ -122,6 +134,12 @@ void displayRooms()
    uText.print(190, 200, String(params.level[1].rooms[4].humidity));
 
    /// łazienka
+
+   Serial.println("Display Rooms:::::");
+   Serial.println("Heat State Łazienka   "+String(params.level[1].rooms[3].heat_state) );
+
+
+
 
    if (String(params.level[1].rooms[3].heat_state) == "1")
    {

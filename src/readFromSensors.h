@@ -13,7 +13,7 @@ Serial.println(jsonExt);
 Serial.print("------------------");
 
 
-StaticJsonDocument<192> sensorData;
+StaticJsonDocument<300> sensorData;
 
 DeserializationError error = deserializeJson(sensorData, jsonExt);
 
@@ -28,8 +28,13 @@ if (error) {
 
 if (sensorData.containsKey("tempc")) {
   const char* macAddr = sensorData["id"];
-
+  
   float tempc = sensorData["tempc"];
+  Serial.println("-------------------");
+  Serial.println(String(macAddr));
+  Serial.println(String(tempc));
+  
+
   updateJsonConfig_sensor(macAddr,"tempc", tempc);
   
 }
@@ -37,6 +42,12 @@ if (sensorData.containsKey("hum")) {
   const char* macAddr = sensorData["id"];
 
   int hum = sensorData["hum"];
+
+  Serial.println("-------------------");
+  Serial.println(String(macAddr));
+  Serial.println(String(hum));
+
+
   updateJsonConfig_sensor(macAddr,"hum", hum);
   
 }
