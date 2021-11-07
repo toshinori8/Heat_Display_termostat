@@ -19,14 +19,15 @@ class roomParams {
   public: struct Rooms
     {
       String name;
-      int id;
+      int id;                
       bool used;
       float temp_set;
       float temp_actual;
-      int humidity;
-      String device;
-      bool manage;
-      bool heat_state;
+      int humidity; 
+      String device;      // MAC ADDR 
+      String valve;       // # valve przypoprządkowany do pokoju
+      bool manage;        // czy pokj ma być zarządzany - ustawiane w aplikacji  WEB
+      bool heat_state;    // Aktualny stan grzania. 
     } rooms[6];
   public: struct level
     {
@@ -144,10 +145,12 @@ bool readForecast(String jsonMessage);
 bool readFromSensors(String jsonMessage);
 void readConfigJson(const char *filename);
 void writeConfigJson(const char *filename);
-
+bool turnValve(String level, String valve, String state);
 
 void drawFrame(int x1, int y1, int x2, int y2);
 void displayWifiIcon(int state);
+
+bool checkHeatState();
 
 int setupRoom(String roomN);
 
@@ -342,3 +345,4 @@ void loop()
 #include <readForecast.h>
 #include <functions.h>
 #include <readFromSensors.h>
+#include <valveControl.h>

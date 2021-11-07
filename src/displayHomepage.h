@@ -21,7 +21,11 @@ void updateHomepage()
 
 	uText.print(30, 176, String(humidity_today));
 	uText.print(30, 205, String(presure_today) + " Hpa");
+	checkHeatState();
+	Serial.println(checkHeatState());
 }
+
+
 
 void displayHomepage()
 {
@@ -35,7 +39,7 @@ void displayHomepage()
 	utft.setBackColor(255, 255, 255);
 	uText.setForeground(255, 255, 255);
 
-	//myFiles.load(0, 0, 320, 240, "presure.raw", 100, 0);
+
 writeConfigJson("rooms.json");
 	updateHomepage();
 

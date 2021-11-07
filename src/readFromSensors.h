@@ -8,9 +8,9 @@ int sta= jsonMessage.indexOf("{");
 int en_= jsonMessage.indexOf("}");
 String jsonExt = jsonMessage.substring(sta,en_+1);
 
-Serial.print("------------------");
-Serial.println(jsonExt);
-Serial.print("------------------");
+// Serial.print("------------------");
+// Serial.println(jsonExt);
+// Serial.print("------------------");
 
 
 StaticJsonDocument<300> sensorData;
@@ -30,9 +30,7 @@ if (sensorData.containsKey("tempc")) {
   const char* macAddr = sensorData["id"];
   
   float tempc = sensorData["tempc"];
-  Serial.println("-------------------");
-  Serial.println(String(macAddr));
-  Serial.println(String(tempc));
+
   
 
   updateJsonConfig_sensor(macAddr,"tempc", tempc);
@@ -42,12 +40,6 @@ if (sensorData.containsKey("hum")) {
   const char* macAddr = sensorData["id"];
 
   int hum = sensorData["hum"];
-
-  Serial.println("-------------------");
-  Serial.println(String(macAddr));
-  Serial.println(String(hum));
-
-
   updateJsonConfig_sensor(macAddr,"hum", hum);
   
 }
@@ -71,7 +63,7 @@ if (sensorData.containsKey("bat")) {
 //float hum = sensorData["hum"]; // 58.1
 
 
-
+return true;
 
 
 

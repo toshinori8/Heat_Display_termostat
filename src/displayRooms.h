@@ -12,8 +12,8 @@ void displayRooms()
    myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
 
    //AEWA
-   Serial.println("Display Rooms:::::");
-   Serial.println("Heat State Sypialnia   "+String(params.level[1].rooms[1].heat_state) );
+   // Serial.println("Display Rooms:::::");
+   // Serial.println("Heat State Sypialnia   "+String(params.level[1].rooms[1].heat_state) );
 
 
    if (String(params.level[1].rooms[1].heat_state) == "1")
@@ -41,7 +41,7 @@ void displayRooms()
 
    // WALERIA
 
-   Serial.println("Heat State Waleria   "+String(params.level[1].rooms[2].heat_state) );
+   //Serial.println("Heat State Waleria   "+String(params.level[1].rooms[2].heat_state) );
 
 
 
@@ -71,8 +71,8 @@ void displayRooms()
 
    /// KUCHNIA
 
-   Serial.println("Display Rooms:::::");
-   Serial.println("Heat State Kuchnia   "+String(params.level[1].rooms[0].heat_state) );
+   //ln("Display Rooms:::::");
+   //Serial.println("Heat State Kuchnia   "+String(params.level[1].rooms[0].heat_state) );
 
 
    if (String(params.level[1].rooms[0].heat_state) == "1")
@@ -135,8 +135,8 @@ utft.setColor(147, 147, 157);
 
    /// łazienka
 
-   Serial.println("Display Rooms:::::");
-   Serial.println("Heat State Łazienka   "+String(params.level[1].rooms[3].heat_state) );
+   //Serial.println("Display Rooms:::::");
+   //Serial.println("Heat State Łazienka   "+String(params.level[1].rooms[3].heat_state) );
 
 
 
