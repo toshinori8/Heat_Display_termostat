@@ -22,7 +22,7 @@ void updateHomepage()
 	uText.print(30, 176, String(humidity_today));
 	uText.print(30, 205, String(presure_today) + " Hpa");
 	checkHeatState();
-	Serial.println(checkHeatState());
+	//Serial.println(checkHeatState());
 }
 
 

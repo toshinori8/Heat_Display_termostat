@@ -93,11 +93,32 @@ void readConfigJson(const char *filename)
 
       String sI = String(i);
 
-      Serial.println("level :" + String(i) + " Level from Json : " + jsonDoc[sI]["levelName"].as<String>());
+      //Serial.println("level :" + String(i) + " Level from Json : " + jsonDoc[sI]["levelName"].as<String>());
 
-      params.level[i].name = jsonDoc[sI]["levelName"].as<String>();
+      params.level[i].name = jsonDoc[sI]["name"].as<String>();
       params.level[i].used = jsonDoc[sI]["used"].as<bool>();
       params.level[i].id = jsonDoc[sI]["id"].as<int>();
+
+      if (jsonDoc[sI].containsKey("conf"))
+      {
+         Serial.write("Znaleziono konfugurację whitelist");
+
+         Serial.println(jsonDoc[sI]["conf"]["whiteList"]["1"].as<String>());
+
+         JsonObject _whiteList = jsonDoc[sI]["conf"]["whiteList"].as<JsonObject>();
+
+         for (JsonPair el : _whiteList)
+         {
+
+            Serial.println(el.key().c_str());
+            Serial.println(el.value().as<char *>());
+            WhiteList += "\"" + el.value().as<String>() + "\",";
+         }
+
+         WhiteList = WhiteList.substring(0, WhiteList.length() - 1);
+      };
+
+      Serial.print(WhiteList);
 
       int sRoom = sizeof(params.level[i].rooms) / sizeof(params.level[i].rooms[0]);
       for (uint8_t g = 0; g < sRoom; ++g)
@@ -152,7 +173,6 @@ void writeConfigJson(const char *filename)
          jsonDoc[sI][Sg]["device"] = params.level[i].rooms[g].device.c_str();
          jsonDoc[sI][Sg]["valve"] = params.level[i].rooms[g].valve.c_str();
          jsonDoc[sI][Sg]["manage"] = params.level[i].rooms[g].manage;
-        
       }
    }
 
@@ -177,11 +197,9 @@ void writeConfigJson(const char *filename)
    }
 }
 
-void updateJsonConfig_sensor(String device, String dataTy, float value)
+void updateOnSensor(String device, String dataTy, float value)
 {
-   //Serial.println("---------");
-   //Serial.println("Device :"+ device);
-   //Serial.println(dataTy + " :"+ String(value));
+ 
 
    int sLevel = sizeof(params.level) / sizeof(params.level[0]);
 
@@ -190,14 +208,22 @@ void updateJsonConfig_sensor(String device, String dataTy, float value)
 
       String sI = String(i);
       int sRoom = sizeof(params.level[i].rooms) / sizeof(params.level[i].rooms[0]);
+      
+      
+      
+
       for (uint8_t g = 0; g < sRoom; ++g)
       {
          String Sg = String(g);
 
-         if (params.level[i].rooms[g].device == device)
+         if (params.level[1].rooms[g].device == device)
          {
 
-            // Serial.println("Room " + device + " updated");
+
+            Serial.println("Updating "+dataTy+ " : " + String(params.level[i].rooms[g].name));
+            Serial.println("Device attached :" + String(params.level[i].rooms[g].device));
+
+
             if (dataTy == "tempc")
             {
 
@@ -208,26 +234,23 @@ void updateJsonConfig_sensor(String device, String dataTy, float value)
                if (params.level[i].rooms[g].temp_set > params.level[i].rooms[g].temp_actual)
                {
                   params.level[1].rooms[selectedROOM].heat_state = 1;
-                  
-                  turnValve("1" ,String(params.level[1].rooms[selectedROOM].valve), "ON");
+                  //jsonDoc[sI][Sg]["heat_state"] = 1;
+                  //turnValve("1", String(jsonDoc[sI][Sg]["valve"]), "ON");
                }
                else
                {
+                  //jsonDoc[sI][Sg]["heat_state"] = 0;
                   params.level[1].rooms[selectedROOM].heat_state = 0;
-                  turnValve("1" , String(params.level[1].rooms[selectedROOM].valve), "OFF");
+                  //turnValve("1", String(jsonDoc[sI][Sg]["valve"]), "OFF");
                }
             }
             if (dataTy == "hum")
             {
                jsonDoc[sI][Sg]["humidity"] = value;
-               params.level[i].rooms[g].humidity = value;
+               //params.level[i].rooms[g].humidity = value;
             }
             //Serial.println(params.level[i].rooms[g].name);
             //  Serial.println("________________________________");
-
-            
-            
-
          };
 
          // jsonDoc[sI][Sg]["id"]               = params.level[i].rooms[g].id;
@@ -240,28 +263,23 @@ void updateJsonConfig_sensor(String device, String dataTy, float value)
          // jsonDoc[sI][Sg]["device"]           = params.level[i].rooms[g].device.c_str();
          // jsonDoc[sI][Sg]["manage"]           = params.level[i].rooms[g].manage;
       }
-
-
-
-
    }
 
-            if (currentPage == 2)
-            {
-               checkHeatState();
-               displayRooms();
-            }
-            if (currentPage == 1)
-            {
-               checkHeatState();
-               
-            }
-
-
+   if (currentPage == 2)
+   {
+      checkHeatState();
+      displayRooms();
+   }
+   if (currentPage == 1)
+   {
+      checkHeatState();
+   }
 }
 
 bool checkHeatState()
 {
+
+   
    bool HeatState = 0;
 
    int sLevel = sizeof(params.level) / sizeof(params.level[0]);
@@ -272,15 +290,17 @@ bool checkHeatState()
       for (uint8_t g = 0; g < sRoom; ++g)
       {
          String Sg = String(g);
-         
-         if (String(params.level[1].rooms[selectedROOM].heat_state) == "1")
+
+      Serial.println("HeatState ["+ String(params.level[i].rooms[g].heat_state)+"] for room "+ String(params.level[i].rooms[g].name));
+
+         if (String(params.level[i].rooms[g].heat_state) == "1")
          {
-     
+
             HeatState = 1;
          }
          else
          {
-        
+
             HeatState = 0;
          }
       }
@@ -289,13 +309,14 @@ bool checkHeatState()
    if (currentPage == 0)
    {
 
-      if (String(HeatState)== "1")
+      if (String(HeatState) == "1")
       {
-         myFiles.load(256, 184, 55, 56, "heat_state_on.raw", 100, 0);
+         myFiles.load(258, 184, 55, 56, "heat_state_on.raw", 100, 0);
       }
-      else if (String(HeatState)== "0") {
-            myFiles.load(256, 184, 55, 56, "heat_state_off.raw", 100, 0);
-         }
+      else if (String(HeatState) == "0")
+      {
+         myFiles.load(258, 184, 55, 56, "heat_state_off.raw", 100, 0);
+      }
    }
 
    return HeatState;

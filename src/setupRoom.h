@@ -12,7 +12,7 @@ int setupRoom(String roomN)
 
     myFiles.load(5, 2, 312, 125, "ROOM.RAW", 100, 0);
 
-    uText.setBackground(255,255,255);
+    uText.setBackground(255, 255, 255);
     utft.setColor(255, 255, 255);
     uText.setFont(SegoeUI13);
 
@@ -47,11 +47,11 @@ int setupRoom(String roomN)
         uText.print(80, 125, "Schody");
         selectedROOM = 5;
     }
-   myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
-    uText.print(75, 40, String(params.level[1].rooms[selectedROOM].temp_actual,2));
+    myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
+    uText.print(75, 40, String(params.level[1].rooms[selectedROOM].temp_actual, 2));
     uText.setForeground(100, 100, 110);
     uText.setFont(SegoeUI13);
-    uText.print(80, 80, String(params.level[1].rooms[selectedROOM].temp_set,2));
+    uText.print(80, 80, String(params.level[1].rooms[selectedROOM].temp_set, 2));
     uText.setForeground(100, 100, 110);
     uText.print(150, 80, String(params.level[1].rooms[selectedROOM].humidity));
 

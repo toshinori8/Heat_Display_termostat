@@ -1,70 +1,52 @@
 bool readFromSensors(String jsonMessage)
 {
 
+  // Extract Json
+  int sta = jsonMessage.indexOf("{");
+  int en_ = jsonMessage.indexOf("}");
+  String jsonExt = jsonMessage.substring(sta, en_ + 1);
 
+  // Serial.print("------------------");
+  // Serial.println(jsonExt);
+  // Serial.print("------------------");
 
-// Extract Json
-int sta= jsonMessage.indexOf("{");
-int en_= jsonMessage.indexOf("}");
-String jsonExt = jsonMessage.substring(sta,en_+1);
+  StaticJsonDocument<500> sensorData;
 
-// Serial.print("------------------");
-// Serial.println(jsonExt);
-// Serial.print("------------------");
+  DeserializationError error = deserializeJson(sensorData, jsonExt);
 
+  if (error)
+  {
+    Serial.print(F("sensor message failed: "));
+    Serial.println(error.c_str());
+  }
 
-StaticJsonDocument<300> sensorData;
+  // ClearGrass Temp & RH ////  "LYWSD02"
+  //  tempc hum id
 
-DeserializationError error = deserializeJson(sensorData, jsonExt);
+  if (sensorData.containsKey("tempc"))
+  {
+    const char *macAddr = sensorData["id"];
 
-if (error) {
-  Serial.print(F("sensor message failed: "));
-  Serial.println(error.c_str());
-  
-}
+    float tempc = sensorData["tempc"];
 
-// ClearGrass Temp & RH ////  "LYWSD02"
-//  tempc hum id
+    updateOnSensor(macAddr, "tempc", tempc);
+  }
+  if (sensorData.containsKey("hum"))
+  {
+    const char *macAddr = sensorData["id"];
 
-if (sensorData.containsKey("tempc")) {
-  const char* macAddr = sensorData["id"];
-  
-  float tempc = sensorData["tempc"];
+    int hum = sensorData["hum"];
+    updateOnSensor(macAddr, "hum", hum);
+  }
+  if (sensorData.containsKey("bat"))
+  {
+    const char *macAddr = sensorData["id"];
 
-  
-
-  updateJsonConfig_sensor(macAddr,"tempc", tempc);
-  
-}
-if (sensorData.containsKey("hum")) {
-  const char* macAddr = sensorData["id"];
-
-  int hum = sensorData["hum"];
-  updateJsonConfig_sensor(macAddr,"hum", hum);
-  
-}
-if (sensorData.containsKey("bat")) {
-  const char* macAddr = sensorData["id"];
-
-  int bat = sensorData["bat"];
-  updateJsonConfig_sensor(macAddr,"bat", bat);
-  
-}
+    int bat = sensorData["bat"];
+    updateOnSensor(macAddr, "bat", bat);
+  }
 
 
 
-
-//const char* id = sensorData["id"]; // "58:2D:34:10:D5:EC"
-//const char* name = sensorData["name"]; // "ClearGrass Temp & RH"
-//int rssi = sensorData["rssi"]; // -92
-//const char* model = sensorData["model"]; // "CGG1"
-//float temp = sensorData["tempc"]; // 18.8
-//float tempf = sensorData["tempf"]; // 65.84
-//float hum = sensorData["hum"]; // 58.1
-
-
-return true;
-
-
-
+  return true;
 }

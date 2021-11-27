@@ -10,52 +10,56 @@ DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
 #include "math.h"
 #include <arduino-timer.h>
-
-
+const int ON_TIME = 300;
+const int OFF_TIME = 1000;
 // file system object
 SdFat sd;
 
-class roomParams {
-  public: struct Rooms
-    {
-      String name;
-      int id;                
-      bool used;
-      float temp_set;
-      float temp_actual;
-      int humidity; 
-      String device;      // MAC ADDR 
-      String valve;       // # valve przypoprządkowany do pokoju
-      bool manage;        // czy pokj ma być zarządzany - ustawiane w aplikacji  WEB
-      bool heat_state;    // Aktualny stan grzania. 
-    } rooms[6];
-  public: struct level
-    {
-      int id;
-      bool used;
-      String name;
-      Rooms rooms[7];
-    } level[3];
+String WhiteList = "";
+// class Devices {
+// public: struct WhiteList{
+//       int id;
+//       String mac;
+//   } whitelist[8];
+// };
+
+class roomParams
+{
+public:
+  struct Rooms
+  {
+    String name;
+    int id;
+    bool used;
+    float temp_set;
+    float temp_actual;
+    int humidity;
+    String device;   // MAC ADDR
+    String valve;    // # valve przypoprządkowany do pokoju
+    bool manage;     // czy pokj ma być zarządzany - ustawiane w aplikacji  WEB
+    bool heat_state; // Aktualny stan grzania.
+  } rooms[6];
+
+public:
+  struct level
+  {
+    int id;
+    bool used;
+    String name;
+    Rooms rooms[7];
+  } level[3];
 };
 
-
-
+//Devices devices;   // urądzenia mierzące temperaturę.
 roomParams params; // parametry pokoi   ------------  level / room / attributes
 
-
-
-
-
 auto timer = timer_create_default();
-
-
 
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
 // SdVolume volume;
 // SdFile root;
-#define SD_CHIP_SELECT 42
-const int chipSelect = 42;
+
 
 unsigned long prevMillisTouch = 0; // track time between touches
 unsigned long prevMillis5sec = 0;  // track 5 seconds for refreshing clock and temp
@@ -68,7 +72,6 @@ int currentPage;
 int bootup;
 int selectedROOM;
 #define null NULL
-#define TOUCH_ORIENTATION LANDSCAPE
 #define SD_CHIP_SELECT 42 // SD chip select pin
 #define SPI_SPEED SD_SCK_MHZ(4)
 File configFile;
@@ -90,7 +93,6 @@ int RST_ESP = 44;    // Reset PIN musi być na HIGH ponieważ nie ma podwieszeni
 int VCC_lcd = 15;    // Pin 15 zasilanie LCD
 
 int ready = 0;
-
 
 float hysterizRoom = 0.25;
 
@@ -157,12 +159,14 @@ int setupRoom(String roomN);
 int update_gfx(float a, float b, int c);
 int roundfunction(float);
 
+bool sendWhitelist();
+
 int myX = 200;
 int myY = 20;
 
 bool lockTouch = true;
 
- String roomsJson = "";
+String roomsJson = "";
 
 void setup()
 {
@@ -179,7 +183,7 @@ void setup()
   delay(1000);
   digitalWrite(RST_ESP, HIGH);
   digitalWrite(CH_PD_8266, HIGH); // +3.3V  PIN 50 ESP TURN ON
-  digitalWrite(VCC_lcd, HIGH);    // +5V PIN 15 - DISPLAY TURN ON
+  digitalWrite(VCC_lcd, 65);      // +5V PIN 15 - DISPLAY TURN ON
 
   utft.clrScr();
 
@@ -192,7 +196,7 @@ void setup()
   bool mysd = 0;
   while (!mysd)
   {
-      delay(300);
+    delay(300);
     if (!sd.begin(SD_CHIP_SELECT, SD_SCK_MHZ(41)))
     {
 
@@ -204,10 +208,9 @@ void setup()
       mysd = 1;
       myFiles.load(0, 0, 320, 240, "LOGOCOM.RAW", 100, 0);
       Serial.println(F("Card initialised."));
-      
+
       readConfigJson("rooms.json");
       delay(300);
-
     }
   }
 
@@ -220,10 +223,8 @@ void setup()
   uText.print(myX, myY, "WiFi");
   delay(300);
 
-  //readFromSensors();
-  myTouch.InitTouch(TOUCH_ORIENTATION);
+  myTouch.InitTouch(LANDSCAPE);
   myTouch.setPrecision(PREC_EXTREME);
-
   displayHomepage();
 }
 
@@ -253,43 +254,50 @@ void loop()
     delay(200);
     if (message.indexOf("wifi") > 0)
     {
-      delay(600);
-      Serial1.println("get forecast_5h");
-      Serial1.println("mqttserver 192.168.8.150");
-      Serial.print("Connecting MQTT server...");
+      Serial.println("Wifi Connected");
+      if (bootup == 1)
+      {
+        Serial1.println("get forecast_5h");
+      }
     }
-
     if (message.indexOf("cod\":\"forecast") > 0)
     {
-
-      readForecast(message);
-
-      if (currentPage == 0)
+      if (bootup == 1)
       {
-        Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
-        
+        Serial.println("Connecting MQTT server...");
+        Serial1.println("mqttserver 192.168.8.150");
       }
-      
+      else
+      {
+        readForecast(message);
+      };
     }
-    if(message.indexOf("mqtt connected")){
-          //  Serial.println("Connected to MQTTGateway");
-          //  Serial.println("Subscribed to sensors");
+    if (message.indexOf("mqtt connected") > 0)
+    {
+      Serial.println("Connected to MQTTGateway");
+      Serial.println("Sening MQQT config...");
 
-    }
-    if(message.indexOf("mqtt not connected")){
-            // Serial.println("[mqtt not connected]");
-           
+      sendWhitelist();
 
-    }
-    if(message.indexOf("subscription added")){
-            // Serial.println("[subscription added]");
-           
+      delay(5000);
+      Serial.println("Adding Subscription... home/MQTTGateway/BTtoMQTT/#");
 
+      Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
     }
-    
+    if (message.indexOf("mqtt not connected") > 0)
+    {
+      // Serial.println("[mqtt not connected]");
+    }
+    if (message.indexOf("subscription added") > 0)
+    {
+      Serial.println("[subscription added] Listening in readFromSensors");
+
+      bootup = 0;
+    }
+
     if (message.indexOf("home/MQTTGateway/BTtoMQTT") > 0)
     {
-   
+
       readFromSensors(message);
     }
 
