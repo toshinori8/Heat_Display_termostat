@@ -27,8 +27,11 @@ void displayRooms()
    utft.drawRect(61, 5, 180, 114);
    utft.drawRect(62, 6, 179, 113);
 
+   // utft.setColor(0, 100, 100);
+	// utext.print(65, 10, "SYPIALNIA");
+
    uText.setForeground(100, 100, 110);
-   uText.print(75, 20, "SYPIALNIA");
+   uText.print(75, 20, String(params.level[1].rooms[1].name));
 
    uText.setFont(SegoeUISemibold28a);
    uText.print(75, 40, String(params.level[1].rooms[1].temp_actual, 2));
@@ -55,7 +58,7 @@ void displayRooms()
 
    uText.setForeground(100, 100, 110);
 
-   uText.print(200, 20, "WALERIA");
+   uText.print(200, 20, String(params.level[1].rooms[2].name));
 
    uText.setFont(SegoeUISemibold28a);
    uText.print(200, 40, String(params.level[1].rooms[2].temp_actual, 2));
@@ -86,7 +89,7 @@ void displayRooms()
 
    uText.setForeground(100, 100, 110);
 
-   uText.print(75, 134, "KUCHNIA");
+   uText.print(75, 134, String(params.level[1].rooms[0].name));
 
    uText.setFont(SegoeUISemibold28a);
 
@@ -106,7 +109,7 @@ void displayRooms()
       utft.fillRect(184, 118, 239, 235);
       utft.fillRect(185, 119, 238, 234);
    }
-
+  
    utft.setColor(147, 147, 157);
    utft.drawRect(183, 117, 240, 236);
    utft.drawRect(184, 118, 239, 235);
@@ -114,7 +117,7 @@ void displayRooms()
 
    uText.setForeground(100, 100, 110);
 
-   uText.print(190, 150, "");
+   uText.print(190, 150, String(params.level[1].rooms[4].name));
 
    uText.setFont(SegoeUI13);
    uText.print(190, 150, String(params.level[1].rooms[4].temp_actual, 2));
@@ -142,7 +145,7 @@ void displayRooms()
    utft.drawRect(242, 178, 314, 234);
 
    uText.setForeground(100, 100, 110);
-   // uText.print(250, 180, "Lazienka");
+   uText.print(250, 180, String(params.level[1].rooms[3].name));
    uText.setFont(SegoeUI13);
    uText.print(250, 180, String(params.level[1].rooms[3].temp_actual, 2));
    uText.setForeground(100, 100, 110);

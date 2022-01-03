@@ -54,6 +54,9 @@ int setupRoom(String roomN)
     uText.print(80, 80, String(params.level[1].rooms[selectedROOM].temp_set, 2));
     uText.setForeground(100, 100, 110);
     uText.print(150, 80, String(params.level[1].rooms[selectedROOM].humidity));
+   
+   utft.setColor(0, 100, 100);
 
+   uText.print(200, 200,String(params.level[1].rooms[selectedROOM].name) );
     return 1;
 }

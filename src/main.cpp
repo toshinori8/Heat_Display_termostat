@@ -9,7 +9,7 @@
 DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
 #include "math.h"
-#include <arduino-timer.h>
+// #include <arduino-timer.h>
 const int ON_TIME = 300;
 const int OFF_TIME = 1000;
 // file system object
@@ -53,7 +53,7 @@ public:
 //Devices devices;   // urądzenia mierzące temperaturę.
 roomParams params; // parametry pokoi   ------------  level / room / attributes
 
-auto timer = timer_create_default();
+///auto timer = timer_create_default();
 
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
@@ -125,14 +125,6 @@ const int8_t DISABLE_CHIP_SELECT = 10;
 
 extern prog_uint16_t img_presure[494] PROGMEM;
 extern prog_uint16_t img_hum[494] PROGMEM;
-//extern prog_uint16_t logoarduinno[25700] PROGMEM;
-// extern prog_uint16_t back[3481] PROGMEM;
-// extern prog_uint16_t img_forecast_gif[1225] PROGMEM;
-// //extern prog_uint16_t img_settings_rooms_gif[2025];
-// extern prog_uint16_t img_down_gif[3978];
-// extern prog_uint16_t img_up_gif[3978];
-// extern prog_uint16_t img_room_gif[39000] ;
-
 extern prog_uchar SegoeUI13[1855] PROGMEM;
 extern prog_uchar SegoeUISemibold28a[10780] PROGMEM;
 
