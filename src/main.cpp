@@ -9,26 +9,57 @@
 DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
 #include "math.h"
-#include <arduino-timer.h>
-
-
+// #include <arduino-timer.h>
+const int ON_TIME = 300;
+const int OFF_TIME = 1000;
 // file system object
 SdFat sd;
-#include <readConfig.h>
-roomParams params; // parametry pokoi   ------------  level / room 
 
+String WhiteList = "";
+// class Devices {
+// public: struct WhiteList{
+//       int id;
+//       String mac;
+//   } whitelist[8];
+// };
 
-auto timer = timer_create_default();
+class roomParams
+{
+public:
+  struct Rooms
+  {
+    String name;
+    int id;
+    bool used;
+    float temp_set;
+    float temp_actual;
+    int humidity;
+    String device;   // MAC ADDR
+    String valve;    // # valve przypoprządkowany do pokoju
+    bool manage;     // czy pokj ma być zarządzany - ustawiane w aplikacji  WEB
+    bool heat_state; // Aktualny stan grzania.
+  } rooms[6];
 
+public:
+  struct level
+  {
+    int id;
+    bool used;
+    String name;
+    Rooms rooms[7];
+  } level[3];
+};
 
+//Devices devices;   // urądzenia mierzące temperaturę.
+roomParams params; // parametry pokoi   ------------  level / room / attributes
 
-// print stream
+///auto timer = timer_create_default();
+
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
 // SdVolume volume;
 // SdFile root;
-#define SD_CHIP_SELECT 42
-const int chipSelect = 42;
+
 
 unsigned long prevMillisTouch = 0; // track time between touches
 unsigned long prevMillis5sec = 0;  // track 5 seconds for refreshing clock and temp
@@ -41,7 +72,6 @@ int currentPage;
 int bootup;
 int selectedROOM;
 #define null NULL
-#define TOUCH_ORIENTATION LANDSCAPE
 #define SD_CHIP_SELECT 42 // SD chip select pin
 #define SPI_SPEED SD_SCK_MHZ(4)
 File configFile;
@@ -52,7 +82,7 @@ unsigned long previousMillis = 0;
 int update_timer;
 int sleep_timer = 0; // 1000
 int sleep_state = 0;
-int sleep_time = 1000000;
+int sleep_time = 90000000; // ustawić na 1000000
 
 int is_back = 0;
 String option;
@@ -64,38 +94,7 @@ int VCC_lcd = 15;    // Pin 15 zasilanie LCD
 
 int ready = 0;
 
-/// USER APP
-
-// DEFINES ROOM TEMPERATURE ARRAY FOR First Floor.
-typedef struct
-{
-  int temp_set;
-  int temp_actual;
-  int humidity;
-  int heat_state;
-} param_pokoju;
-
-param_pokoju room[7];
-// DEFINES ROOM TEMPERATURE ARRAY
-
-DynamicJsonDocument level(384);
-JsonObject piwnica = level.createNestedObject("piwnica");
-JsonObject pietro = level.createNestedObject("pietro");
-
-
-
-
-// piwnica["temp_set"]= 0 ;
-// piwnica["temp_actual"]= 0 ;
-// piwnica["humidity"]= 0 ;
-// piwnica["heat_state"]= 0 ;
-// piwnica["heat_state"]= 0 ;
-
-// pietro["temp_set"]= 0 ;
-// pietro["temp_actual"]= 0 ;
-// pietro["humidity"]= 0 ;
-// pietro["heat_state"]= 0 ;
-
+float hysterizRoom = 0.25;
 
 float temp_outside_today = 15;           // temperatura na zewnątrz.
 float temp_outside_feels_like_today = 0; // temperatura na zewnątrz odczuwalna
@@ -126,14 +125,6 @@ const int8_t DISABLE_CHIP_SELECT = 10;
 
 extern prog_uint16_t img_presure[494] PROGMEM;
 extern prog_uint16_t img_hum[494] PROGMEM;
-//extern prog_uint16_t logoarduinno[25700] PROGMEM;
-// extern prog_uint16_t back[3481] PROGMEM;
-// extern prog_uint16_t img_forecast_gif[1225] PROGMEM;
-// //extern prog_uint16_t img_settings_rooms_gif[2025];
-// extern prog_uint16_t img_down_gif[3978];
-// extern prog_uint16_t img_up_gif[3978];
-// extern prog_uint16_t img_room_gif[39000] ;
-
 extern prog_uchar SegoeUI13[1855] PROGMEM;
 extern prog_uchar SegoeUISemibold28a[10780] PROGMEM;
 
@@ -146,21 +137,28 @@ bool writeConfig();
 void displayRooms();
 bool readForecast(String jsonMessage);
 bool readFromSensors(String jsonMessage);
+void readConfigJson(const char *filename);
+void writeConfigJson(const char *filename);
+bool turnValve(String level, String valve, String state);
 
 void drawFrame(int x1, int y1, int x2, int y2);
 void displayWifiIcon(int state);
 
+bool checkHeatState();
+
 int setupRoom(String roomN);
 
-int update_gfx(int a, int b, int c);
+int update_gfx(float a, float b, int c);
 int roundfunction(float);
+
+bool sendWhitelist();
 
 int myX = 200;
 int myY = 20;
 
 bool lockTouch = true;
 
- String roomsJson = "";
+String roomsJson = "";
 
 void setup()
 {
@@ -174,10 +172,12 @@ void setup()
   utft.InitLCD(LANDSCAPE);
   pinMode(VCC_lcd, OUTPUT);
   pinMode(CH_PD_8266, OUTPUT);
-  delay(1000);
+  
+  
+
   digitalWrite(RST_ESP, HIGH);
   digitalWrite(CH_PD_8266, HIGH); // +3.3V  PIN 50 ESP TURN ON
-  digitalWrite(VCC_lcd, HIGH);    // +5V PIN 15 - DISPLAY TURN ON
+  digitalWrite(VCC_lcd, 65);      // +5V PIN 15 - DISPLAY TURN ON
 
   utft.clrScr();
 
@@ -190,7 +190,7 @@ void setup()
   bool mysd = 0;
   while (!mysd)
   {
-
+    delay(300);
     if (!sd.begin(SD_CHIP_SELECT, SD_SCK_MHZ(41)))
     {
 
@@ -202,22 +202,9 @@ void setup()
       mysd = 1;
       myFiles.load(0, 0, 320, 240, "LOGOCOM.RAW", 100, 0);
       Serial.println(F("Card initialised."));
-      uText.print(myX, myY, "Card initialised...");
 
-      delay(200);
-
-
-    
-// Serial.println("-----------------------------");
       readConfigJson("rooms.json");
-// Serial.println("-----------------------------");
-
-//printFile("rooms.json");
-
-// Serial.println("-----------------------------");
-//  Serial.print("// "+ jsonDoc["0"]["2"]["name"].as<String>());
-//    Serial.print("// "+ jsonDoc["1"]["4"]["name"].as<String>());
-
+      
     }
   }
 
@@ -226,20 +213,12 @@ void setup()
   utft.setColor(100, 100, 100);
   utft.setBackColor(100, 100, 100);
   uText.setForeground(100, 100, 100);
-  delay(300);
+  
+  
   uText.print(myX, myY, "WiFi");
-  delay(300);
-
-  // uText.print(20, 50, "Wczytuje dane");
-  // delay(1000);
-  // uText.print(20, 70, "Inicjuje połączenie WiFi");
-  // delay(1000);
-  // uText.print(20, 90, "Wczytuje dane recovery");
-  delay(1500);
-  //readFromSensors();
-  myTouch.InitTouch(TOUCH_ORIENTATION);
+  
+  myTouch.InitTouch(LANDSCAPE);
   myTouch.setPrecision(PREC_EXTREME);
-
   displayHomepage();
 }
 
@@ -267,23 +246,47 @@ void loop()
   {
     message = Serial1.readString();
     delay(200);
-    if (message.indexOf("wifi §§§§") > 0)
+    if (message.indexOf("wifi") > 0)
     {
-      delay(600);
-      Serial1.println("get forecast_5h");
-      Serial1.println("mqttserver 192.168.8.150");
-      Serial.print("Connecting MQTT server...");
+      Serial.println("Wifi Connected");
+      if (bootup == 1)
+      {
+        Serial1.println("get forecast_5h");
+      }
     }
-
     if (message.indexOf("cod\":\"forecast") > 0)
     {
-
-      readForecast(message);
-
-      if (currentPage == 0)
+      if (bootup == 1)
       {
-        Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
+        Serial.println("Connecting MQTT server...");
+        Serial1.println("mqttserver 192.168.8.150");
       }
+      else
+      {
+        readForecast(message);
+      };
+    }
+    if (message.indexOf("mqtt connected") > 0)
+    {
+      Serial.println("Connected to MQTTGateway");
+      Serial.println("Sening MQQT config...");
+
+      sendWhitelist();
+
+      delay(5000);
+      Serial.println("Adding Subscription... home/MQTTGateway/BTtoMQTT/#");
+
+      Serial1.println("subscribe home/MQTTGateway/BTtoMQTT/#");
+    }
+    if (message.indexOf("mqtt not connected") > 0)
+    {
+      // Serial.println("[mqtt not connected]");
+    }
+    if (message.indexOf("subscription added") > 0)
+    {
+      Serial.println("[subscription added] Listening in readFromSensors");
+
+      bootup = 0;
     }
 
     if (message.indexOf("home/MQTTGateway/BTtoMQTT") > 0)
@@ -336,7 +339,7 @@ void loop()
 //#include <img_setupROOM.h>
 
 // APP CODE
-
+#include <readConfig.h>
 #include <update_gfx.h>
 #include <displayHomepage.h>
 #include <displayRooms.h>
@@ -344,3 +347,4 @@ void loop()
 #include <readForecast.h>
 #include <functions.h>
 #include <readFromSensors.h>
+#include <valveControl.h>

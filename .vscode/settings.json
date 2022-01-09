@@ -8,6 +8,14 @@
         "string": "cpp",
         "vector": "cpp",
         "string_view": "cpp",
-        "unordered_map": "cpp"
-    }
+        "unordered_map": "cpp",
+        "typeinfo": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
+    },
+    "cmake.configureOnOpen": false
 }

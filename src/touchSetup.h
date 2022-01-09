@@ -23,48 +23,48 @@ if (myTouch.dataAvailable())
             displayRooms();
         }
     }
-    if (currentPage == 2 && lockTouch==false) // display Rooms
+    if (currentPage == 2 && lockTouch == false) // display Rooms
     {
         // Back Button
         if ((x >= 2) && (x <= 54) && (y >= 170) && (y <= 240))
         {
             drawFrame(2, 200, 54, 240);
-            delay(500);
+            delay(100);
             displayHomepage();
         }
         // touch AE room   64, 8, 178, 114
         if ((x >= 64) && (x <= 177) && (y >= 8) && (y <= 112))
         {
             drawFrame(64, 8, 177, 112);
-            delay(500);
+            delay(100);
             setupRoom("AE");
         }
         // touch Waleria room   188, 6, 313, 114
         if ((x >= 188) && (x <= 313) && (y >= 8) && (y <= 112))
         {
             drawFrame(188, 8, 313, 112);
-            delay(500);
+            delay(100);
             setupRoom("W");
         }
         // touch kuchnia  65, 123, 177, 235
         if ((x >= 64) && (x <= 177) && (y >= 120) && (y <= 234))
         {
             drawFrame(64, 120, 177, 234);
-            delay(500);
+            delay(100);
             setupRoom("K");
         }
         // touch przedpokoj  190, 120, 236, 233
         if ((x >= 187) && (x <= 237) && (y >= 120) && (y <= 234))
         {
             drawFrame(187, 121, 237, 234);
-            delay(500);
+            delay(100);
             setupRoom("P");
         }
         // touch łazienka  245, 179, 314, 235
         if ((x >= 247) && (x <= 315) && (y >= 180) && (y <= 234))
         {
             drawFrame(247, 180, 315, 234);
-            delay(500);
+            delay(100);
             setupRoom("L");
         }
         // touch klatka schodowa  245, 179, 314, 235
@@ -80,33 +80,66 @@ if (myTouch.dataAvailable())
         // Back Button
         if ((x >= 2) && (x <= 54) && (y >= 170) && (y <= 240))
         {
-            if (configFile.available())
-            {
-                configFile.read((uint8_t *)&room, sizeof(room));
-            }
+            // if (configFile.available())
+            // {
+            //     configFile.read((uint8_t *)&room, sizeof(room));
+            // }
             displayRooms();
         }
         // BUTTON UP 185, 8, 316, 53
         if ((x >= 190) && (x <= 313) && (y >= 0) && (y <= 53))
         {
-            room[selectedROOM].temp_set = room[selectedROOM].temp_set + 1;
-            //Serial.println(String(room[selectedROOM].temp_set));
+
+            params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set + hysterizRoom;
+
+            if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
+            {
+
+                params.level[1].rooms[selectedROOM].heat_state = 1;
+                //turnValve("1" ,String(params.level[1].rooms[selectedROOM].valve), "ON");
+                // Serial.print("heatState powinno być 1 jest");
+                // Serial.println(params.level[1].rooms[selectedROOM].heat_state);
+            }
+            else
+            {
+                params.level[1].rooms[selectedROOM].heat_state = 0;
+                turnValve("1" ,String(params.level[1].rooms[selectedROOM].valve), "OFF");
+                // Serial.print("heatState powinno być 0 jest");
+                // Serial.println(params.level[1].rooms[selectedROOM].heat_state);
+            }
+
             update_gfx(
-                room[selectedROOM].temp_set,
-                room[selectedROOM].temp_actual,
-                room[selectedROOM].humidity);
+                params.level[1].rooms[selectedROOM].temp_set,
+                params.level[1].rooms[selectedROOM].temp_actual,
+                params.level[1].rooms[selectedROOM].humidity);
         }
 
         // BUTTON DOWN 188, 63, 314, 109
         if ((x >= 190) && (x <= 313) && (y >= 60) && (y <= 100))
         {
-            room[selectedROOM].temp_set = room[selectedROOM].temp_set - 1;
+           
+            params.level[1].rooms[selectedROOM].temp_set = params.level[1].rooms[selectedROOM].temp_set - hysterizRoom;
+            if (params.level[1].rooms[selectedROOM].temp_set > params.level[1].rooms[selectedROOM].temp_actual)
+            {
+                params.level[1].rooms[selectedROOM].heat_state = 1;
+                turnValve("1" ,String(params.level[1].rooms[selectedROOM].valve), "ON");
+
+                // Serial.print("heatState powinno być 1 jest");
+                // Serial.println(params.level[1].rooms[selectedROOM].heat_state);
+            }
+            else
+            {
+                params.level[1].rooms[selectedROOM].heat_state = 0;
+                turnValve("1" ,String(params.level[1].rooms[selectedROOM].valve), "OFF");
+
+                // Serial.print("heatState powinno być 0 jest");
+                // Serial.println(params.level[1].rooms[selectedROOM].heat_state);
+            }
+
             update_gfx(
-                room[selectedROOM].temp_set,
-                room[selectedROOM].temp_actual,
-                room[selectedROOM].humidity);
+                params.level[1].rooms[selectedROOM].temp_set,
+                params.level[1].rooms[selectedROOM].temp_actual,
+                params.level[1].rooms[selectedROOM].humidity);
         }
     }
-
-
 }

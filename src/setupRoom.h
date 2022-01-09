@@ -12,7 +12,8 @@ int setupRoom(String roomN)
 
     myFiles.load(5, 2, 312, 125, "ROOM.RAW", 100, 0);
 
-    uText.setBackground(255,255,255);
+    uText.setBackground(255, 255, 255);
+    utft.setColor(255, 255, 255);
     uText.setFont(SegoeUI13);
 
     if (roomN == "AE")
@@ -28,7 +29,7 @@ int setupRoom(String roomN)
     if (roomN == "K")
     {
         uText.print(80, 125, "Kuchania");
-        selectedROOM = 3;
+        selectedROOM = 0;
     }
     if (roomN == "P")
     {
@@ -38,21 +39,24 @@ int setupRoom(String roomN)
     if (roomN == "L")
     {
         uText.print(80, 125, "Lazienka");
-        selectedROOM = 5;
+        selectedROOM = 3;
     }
 
     if (roomN == "S")
     {
-        uText.print(80, 125, "Klatka schodowa");
-        selectedROOM = 6;
+        uText.print(80, 125, "Schody");
+        selectedROOM = 5;
     }
-   myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
-    // uText.print(75, 40, String(level[0]room[selectedROOM].temp_actual));
-    // uText.setForeground(100, 100, 110);
-    // uText.setFont(SegoeUI13);
-    // uText.print(80, 80, String(level[0]room[selectedROOM].temp_set));
-    // uText.setForeground(100, 100, 110);
-    // uText.print(150, 80, String(level[0]room[selectedROOM].humidity));
+    myFiles.load(0, 189, 47, 47, "back.raw", 100, 0);
+    uText.print(75, 40, String(params.level[1].rooms[selectedROOM].temp_actual, 2));
+    uText.setForeground(100, 100, 110);
+    uText.setFont(SegoeUI13);
+    uText.print(80, 80, String(params.level[1].rooms[selectedROOM].temp_set, 2));
+    uText.setForeground(100, 100, 110);
+    uText.print(150, 80, String(params.level[1].rooms[selectedROOM].humidity));
+   
+   utft.setColor(0, 100, 100);
 
+   uText.print(200, 200,String(params.level[1].rooms[selectedROOM].name) );
     return 1;
 }
