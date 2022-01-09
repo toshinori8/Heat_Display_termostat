@@ -179,9 +179,9 @@ void displayRooms()
    // utft.drawBitmap(8, 204, 30, 31, back);
 
    // Serial.print("lockTouch false");
-   //delay(200);
+   
 
-   // delay(1200);
+   
    // lockTouch=false;
 
    touchDelayStart = millis();

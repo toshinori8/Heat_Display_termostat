@@ -172,7 +172,9 @@ void setup()
   utft.InitLCD(LANDSCAPE);
   pinMode(VCC_lcd, OUTPUT);
   pinMode(CH_PD_8266, OUTPUT);
-  delay(1000);
+  
+  
+
   digitalWrite(RST_ESP, HIGH);
   digitalWrite(CH_PD_8266, HIGH); // +3.3V  PIN 50 ESP TURN ON
   digitalWrite(VCC_lcd, 65);      // +5V PIN 15 - DISPLAY TURN ON
@@ -202,7 +204,7 @@ void setup()
       Serial.println(F("Card initialised."));
 
       readConfigJson("rooms.json");
-      delay(300);
+      
     }
   }
 
@@ -211,10 +213,10 @@ void setup()
   utft.setColor(100, 100, 100);
   utft.setBackColor(100, 100, 100);
   uText.setForeground(100, 100, 100);
-  delay(300);
+  
+  
   uText.print(myX, myY, "WiFi");
-  delay(300);
-
+  
   myTouch.InitTouch(LANDSCAPE);
   myTouch.setPrecision(PREC_EXTREME);
   displayHomepage();
