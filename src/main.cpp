@@ -9,7 +9,7 @@
 DueFlashStorage dueFlashStorage;
 #include <UTFT_SdRaw.h>
 #include "math.h"
-#include <arduino-timer.h>
+// #include <arduino-timer.h>
 const int ON_TIME = 300;
 const int OFF_TIME = 1000;
 // file system object
@@ -53,7 +53,7 @@ public:
 //Devices devices;   // urądzenia mierzące temperaturę.
 roomParams params; // parametry pokoi   ------------  level / room / attributes
 
-auto timer = timer_create_default();
+///auto timer = timer_create_default();
 
 //ArduinoOutStream cout(Serial);
 // Sd2Card sd;
@@ -125,14 +125,6 @@ const int8_t DISABLE_CHIP_SELECT = 10;
 
 extern prog_uint16_t img_presure[494] PROGMEM;
 extern prog_uint16_t img_hum[494] PROGMEM;
-//extern prog_uint16_t logoarduinno[25700] PROGMEM;
-// extern prog_uint16_t back[3481] PROGMEM;
-// extern prog_uint16_t img_forecast_gif[1225] PROGMEM;
-// //extern prog_uint16_t img_settings_rooms_gif[2025];
-// extern prog_uint16_t img_down_gif[3978];
-// extern prog_uint16_t img_up_gif[3978];
-// extern prog_uint16_t img_room_gif[39000] ;
-
 extern prog_uchar SegoeUI13[1855] PROGMEM;
 extern prog_uchar SegoeUISemibold28a[10780] PROGMEM;
 
@@ -180,7 +172,9 @@ void setup()
   utft.InitLCD(LANDSCAPE);
   pinMode(VCC_lcd, OUTPUT);
   pinMode(CH_PD_8266, OUTPUT);
-  delay(1000);
+  
+  
+
   digitalWrite(RST_ESP, HIGH);
   digitalWrite(CH_PD_8266, HIGH); // +3.3V  PIN 50 ESP TURN ON
   digitalWrite(VCC_lcd, 65);      // +5V PIN 15 - DISPLAY TURN ON
@@ -210,7 +204,7 @@ void setup()
       Serial.println(F("Card initialised."));
 
       readConfigJson("rooms.json");
-      delay(300);
+      
     }
   }
 
@@ -219,10 +213,10 @@ void setup()
   utft.setColor(100, 100, 100);
   utft.setBackColor(100, 100, 100);
   uText.setForeground(100, 100, 100);
-  delay(300);
+  
+  
   uText.print(myX, myY, "WiFi");
-  delay(300);
-
+  
   myTouch.InitTouch(LANDSCAPE);
   myTouch.setPrecision(PREC_EXTREME);
   displayHomepage();
