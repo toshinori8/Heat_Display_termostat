@@ -185,7 +185,7 @@ void setup()
   utft.setBackColor(0, 0, 0);
   uText.setBackground(0, 0, 0);
   uText.setFont(SegoeUI13);
-  uText.print(200, 20, "Wczytuje dane..");
+  uText.print(200, 20, "Loading..");
 
   bool mysd = 0;
   while (!mysd)
@@ -258,18 +258,20 @@ void loop()
     {
       if (bootup == 1)
       {
-        Serial.println("Connecting MQTT server...");
-        Serial1.println("mqttserver 192.168.8.150");
+        //Serial.println("Connecting MQTT server...");
+        // Serial1.println("mqttserver 192.168.8.150");
       }
       else
       {
         readForecast(message);
+        Serial.println('_');
+        Serial.println(message);
       };
     }
     if (message.indexOf("mqtt connected") > 0)
     {
       Serial.println("Connected to MQTTGateway");
-      Serial.println("Sening MQQT config...");
+      Serial.println("Sending MQQT config...");
 
       sendWhitelist();
 

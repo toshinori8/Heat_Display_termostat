@@ -298,11 +298,11 @@ bool checkHeatState()
 
             HeatState = 1;
          }
-         else
-         {
+         // else
+         // {
 
-            HeatState = 0;
-         }
+         //    HeatState = 0;
+         // }
       }
    }
 
@@ -311,11 +311,11 @@ bool checkHeatState()
 
       if (String(HeatState) == "1")
       {
-         myFiles.load(258, 184, 55, 56, "heat_state_on.raw", 100, 0);
+         myFiles.load(257, 184, 55, 56, "heat_state_on.raw", 100, 0);
       }
       else if (String(HeatState) == "0")
       {
-         myFiles.load(258, 184, 55, 56, "heat_state_off.raw", 100, 0);
+         myFiles.load(257, 184, 55, 56, "heat_state_off.raw", 100, 0);
       }
    }
 
